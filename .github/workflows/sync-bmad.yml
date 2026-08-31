@@ -14,6 +14,7 @@ on:
 
 permissions:
   contents: write
+  issues: write
 
 concurrency:
   group: sync-bmad
@@ -31,22 +32,122 @@ jobs:
 
       - uses: astral-sh/setup-uv@v6
 
+      - name: Prepare compatibility diagnostics
+        shell: bash
+        run: |
+          mkdir -p .tmp/compat
+          node - <<'NODE'
+          const fs = require('fs');
+          let version = null;
+          let sha = null;
+          try { version = JSON.parse(fs.readFileSync('plugins/bmad-method/UPSTREAM.json', 'utf8')).version ?? null; } catch {}
+          try { sha = fs.readFileSync('upstream/VERSION', 'utf8').trim() || null; } catch {}
+          fs.writeFileSync('.tmp/compat/previous-good.json', JSON.stringify({ version, sha }));
+          NODE
+
       - name: Clone upstream BMAD
-        run: git clone --depth 1 https://github.com/bmad-code-org/BMAD-METHOD.git .tmp/bmad
+        id: upstream_clone
+        continue-on-error: true
+        shell: bash
+        run: |
+          set -o pipefail
+          git clone --depth 1 https://github.com/bmad-code-org/BMAD-METHOD.git .tmp/bmad 2>&1 | tee .tmp/compat/upstream_clone.log
+
+      - name: Capture upstream identity
+        if: steps.upstream_clone.outcome == 'success'
+        shell: bash
+        run: |
+          git -C .tmp/bmad rev-parse HEAD > .tmp/compat/upstream-sha
+          node -e "const p=require('./.tmp/bmad/package.json'); process.stdout.write(String(p.version || ''))" > .tmp/compat/upstream-version
 
       - name: Sync upstream metadata
-        run: npm run sync
+        id: upstream_sync
+        if: steps.upstream_clone.outcome == 'success'
+        continue-on-error: true
+        shell: bash
+        run: |
+          set -o pipefail
+          npm run sync 2>&1 | tee .tmp/compat/upstream_sync.log
 
       - name: Build ChatGPT marketplace
-        run: npm run build -- .tmp/bmad
+        id: adapter_generator
+        if: steps.upstream_sync.outcome == 'success'
+        continue-on-error: true
+        shell: bash
+        run: |
+          set -o pipefail
+          npm run build -- .tmp/bmad 2>&1 | tee .tmp/compat/adapter_generator.log
+
+      - name: Validate marketplace manifest
+        id: validate_manifest
+        if: steps.adapter_generator.outcome == 'success'
+        continue-on-error: true
+        shell: bash
+        run: |
+          set -o pipefail
+          node scripts/validate-manifest.mjs 2>&1 | tee .tmp/compat/validate_manifest.log
 
       - name: Validate generated distribution
-        run: npm run check
+        id: validate_plugin
+        if: steps.validate_manifest.outcome == 'success'
+        continue-on-error: true
+        shell: bash
+        run: |
+          set -o pipefail
+          node scripts/validate-plugin.mjs 2>&1 | tee .tmp/compat/validate_plugin.log
 
       - name: Runtime integration smoke
-        run: npm run integration
+        id: integration
+        if: steps.validate_plugin.outcome == 'success'
+        continue-on-error: true
+        shell: bash
+        run: |
+          set -o pipefail
+          npm run integration 2>&1 | tee .tmp/compat/integration.log
+
+      - name: Report compatibility failure
+        if: >-
+          always() && (
+            steps.upstream_clone.outcome == 'failure' ||
+            steps.upstream_sync.outcome == 'failure' ||
+            steps.adapter_generator.outcome == 'failure' ||
+            steps.validate_manifest.outcome == 'failure' ||
+            steps.validate_plugin.outcome == 'failure' ||
+            steps.integration.outcome == 'failure'
+          )
+        shell: bash
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          if [[ "${{ steps.upstream_clone.outcome }}" == "failure" ]]; then stage=upstream_clone
+          elif [[ "${{ steps.upstream_sync.outcome }}" == "failure" ]]; then stage=upstream_sync
+          elif [[ "${{ steps.adapter_generator.outcome }}" == "failure" ]]; then stage=adapter_generator
+          elif [[ "${{ steps.validate_manifest.outcome }}" == "failure" ]]; then stage=validate_manifest
+          elif [[ "${{ steps.validate_plugin.outcome }}" == "failure" ]]; then stage=validate_plugin
+          else stage=integration
+          fi
+          node scripts/report-compatibility.mjs --stage "$stage" --log ".tmp/compat/$stage.log"
+
+      - name: Fail incompatible sync
+        if: >-
+          always() && (
+            steps.upstream_clone.outcome == 'failure' ||
+            steps.upstream_sync.outcome == 'failure' ||
+            steps.adapter_generator.outcome == 'failure' ||
+            steps.validate_manifest.outcome == 'failure' ||
+            steps.validate_plugin.outcome == 'failure' ||
+            steps.integration.outcome == 'failure'
+          )
+        run: exit 1
+
+      - name: Resolve compatibility incidents
+        if: steps.integration.outcome == 'success'
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: node scripts/resolve-compatibility.mjs
 
       - name: Commit generated changes
+        if: steps.integration.outcome == 'success'
         shell: bash
         run: |
           git add -A
