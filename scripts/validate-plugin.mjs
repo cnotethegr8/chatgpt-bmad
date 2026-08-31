@@ -13,8 +13,10 @@ for (const rel of plugin.skills) {
   if (seen.has(name)) throw new Error(`Duplicate skill: ${name}`);
   seen.add(name);
   const root = path.join('plugin', 'skills', name);
-  await access(path.join(root, 'SKILL.md'));
+  const skill = await readFile(path.join(root, 'SKILL.md'), 'utf8');
+  if (!skill.includes('## ChatGPT adapter bootstrap')) throw new Error(`Missing bootstrap instructions: ${name}`);
+  await access(path.join(root, 'scripts', 'chatgpt_bootstrap.py'));
   await access(path.join(root, 'agents', 'openai.yaml'));
 }
 await access(path.join('plugin', 'runtime', 'scripts', 'render_skill.py'));
-console.log(`Plugin valid: ${plugin.skills.length} BMAD skills`);
+console.log(`Plugin valid: ${plugin.skills.length} BMAD skills with ChatGPT bootstrap`);
