@@ -8,7 +8,26 @@ The plugin automatically tracks upstream BMAD releases, regenerates the ChatGPT 
 
 ## Using BMAD in ChatGPT
 
-Once the **BMAD Method** plugin is installed in ChatGPT, you can use BMAD naturally in your conversations.
+### Install BMAD Method
+
+BMAD Method can be installed in ChatGPT by importing this repository as a plugin marketplace.
+
+A workspace admin or owner can:
+
+1. Open **Workspace settings → Plugins**.
+2. Select **Add → Import marketplace**.
+3. Enter the repository URL:
+
+   ```text
+   https://github.com/cnotethegr8/chatgpt-bmad
+   ```
+
+4. Leave **Path** empty.
+5. Leave **Branch** empty to follow the repository's default branch and receive future updates.
+6. Select **Import marketplace** and authorize GitHub if prompted.
+7. From the imported marketplace, open **BMAD Method** and make it available or installed for the appropriate workspace members.
+
+Once installed, BMAD's skills are available directly in ChatGPT.
 
 You don't need to manually select individual workflows or understand how BMAD is packaged internally. Describe what you want to accomplish and ChatGPT can invoke the appropriate BMAD skill.
 
@@ -35,6 +54,14 @@ For example:
 > Use the BMAD UX Designer to help me design the user experience for this feature.
 
 You can also explicitly ask ChatGPT to use a particular BMAD workflow or agent when you want more control.
+
+### Updates
+
+GitHub-imported marketplaces are synchronized automatically by ChatGPT each day.
+
+Workspace admins can also request an immediate update from:
+
+**Workspace settings → Plugins → Marketplaces → BMAD Method → Sync now**
 
 ## What's included
 
@@ -67,10 +94,14 @@ generate ChatGPT skills
     ↓
 validate + runtime test
     ↓
-publish
+publish to GitHub
+    ↓
+ChatGPT marketplace sync
 ```
 
 The repository checks upstream BMAD automatically. A generated distribution is only published after its skills pass validation and runtime integration testing.
+
+ChatGPT then synchronizes the imported GitHub marketplace, allowing installed BMAD Method plugins to follow the generated distribution.
 
 This allows the ChatGPT version to follow BMAD development without becoming a separate fork.
 
