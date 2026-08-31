@@ -39,7 +39,7 @@ jobs:
   sync:
     runs-on: ubuntu-latest
     env:
-      SIMULATE_FAILURE_STAGE: ${{ github.event_name == 'workflow_dispatch' && inputs.simulate_failure_stage || (github.ref_name == 'test/compat-failure-harness' && 'adapter_generator') || 'none' }}
+      SIMULATE_FAILURE_STAGE: ${{ github.event_name == 'workflow_dispatch' && inputs.simulate_failure_stage || 'none' }}
     steps:
       - uses: actions/checkout@v4
 
