@@ -2,6 +2,21 @@ name: Sync BMAD
 
 on:
   workflow_dispatch:
+    inputs:
+      simulate_failure_stage:
+        description: 'Manual acceptance test only: inject a compatibility failure'
+        required: false
+        default: none
+        type: choice
+        options:
+          - none
+          - upstream_sync
+          - adapter_generator
+          - validate_manifest
+          - validate_plugin
+          - runtime_bootstrap
+          - bmad_workflow_runtime
+          - runtime_integration
   schedule:
     - cron: '17 4 * * *'
   push:
@@ -23,6 +38,8 @@ concurrency:
 jobs:
   sync:
     runs-on: ubuntu-latest
+    env:
+      SIMULATE_FAILURE_STAGE: ${{ github.event_name == 'workflow_dispatch' && inputs.simulate_failure_stage || 'none' }}
     steps:
       - uses: actions/checkout@v4
 
@@ -67,7 +84,9 @@ jobs:
         shell: bash
         run: |
           set -o pipefail
-          npm run sync 2>&1 | tee .tmp/compat/upstream_sync.log
+          : > .tmp/compat/upstream_sync.log
+          node scripts/simulate-compatibility-failure.mjs --stage upstream_sync --log .tmp/compat/upstream_sync.log
+          npm run sync 2>&1 | tee -a .tmp/compat/upstream_sync.log
 
       - name: Build ChatGPT marketplace
         id: adapter_generator
@@ -76,7 +95,9 @@ jobs:
         shell: bash
         run: |
           set -o pipefail
-          npm run build -- .tmp/bmad 2>&1 | tee .tmp/compat/adapter_generator.log
+          : > .tmp/compat/adapter_generator.log
+          node scripts/simulate-compatibility-failure.mjs --stage adapter_generator --log .tmp/compat/adapter_generator.log
+          npm run build -- .tmp/bmad 2>&1 | tee -a .tmp/compat/adapter_generator.log
 
       - name: Validate marketplace manifest
         id: validate_manifest
@@ -85,7 +106,9 @@ jobs:
         shell: bash
         run: |
           set -o pipefail
-          node scripts/validate-manifest.mjs 2>&1 | tee .tmp/compat/validate_manifest.log
+          : > .tmp/compat/validate_manifest.log
+          node scripts/simulate-compatibility-failure.mjs --stage validate_manifest --log .tmp/compat/validate_manifest.log
+          node scripts/validate-manifest.mjs 2>&1 | tee -a .tmp/compat/validate_manifest.log
 
       - name: Validate generated distribution
         id: validate_plugin
@@ -94,7 +117,9 @@ jobs:
         shell: bash
         run: |
           set -o pipefail
-          node scripts/validate-plugin.mjs 2>&1 | tee .tmp/compat/validate_plugin.log
+          : > .tmp/compat/validate_plugin.log
+          node scripts/simulate-compatibility-failure.mjs --stage validate_plugin --log .tmp/compat/validate_plugin.log
+          node scripts/validate-plugin.mjs 2>&1 | tee -a .tmp/compat/validate_plugin.log
 
       - name: Runtime integration smoke
         id: integration
@@ -103,7 +128,9 @@ jobs:
         shell: bash
         run: |
           set -o pipefail
-          npm run integration 2>&1 | tee .tmp/compat/integration.log
+          : > .tmp/compat/integration.log
+          node scripts/simulate-compatibility-failure.mjs --stage integration --log .tmp/compat/integration.log
+          npm run integration 2>&1 | tee -a .tmp/compat/integration.log
 
       - name: Report compatibility failure
         if: >-
@@ -147,7 +174,7 @@ jobs:
         run: node scripts/resolve-compatibility.mjs
 
       - name: Commit generated changes
-        if: steps.integration.outcome == 'success'
+        if: steps.integration.outcome == 'success' && github.ref == 'refs/heads/main'
         shell: bash
         run: |
           git add -A
