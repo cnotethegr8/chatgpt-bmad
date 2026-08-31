@@ -8,6 +8,8 @@
     "build": "node scripts/build-plugin.mjs",
     "check": "node scripts/validate-manifest.mjs && node scripts/validate-plugin.mjs",
     "integration": "node scripts/integration-smoke.mjs",
+    "regenerate": "npm run test:regenerate && node scripts/regenerate.mjs",
+    "test:regenerate": "node --test scripts/regenerate.test.mjs",
     "test:compat": "node --test scripts/compatibility-incident.test.mjs"
   },
   "engines": {
