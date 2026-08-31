@@ -52,10 +52,39 @@ async function render(skillName) {
   }
 }
 
+async function exercisePrdRuntime() {
+  const prdSkill = path.join(skillsRoot, 'bmad-prd');
+  const resolveCustomization = path.join(projectRoot, '_bmad', 'scripts', 'resolve_customization.py');
+  const memlog = path.join(projectRoot, '_bmad', 'scripts', 'memlog.py');
+
+  const customization = run(
+    'uv',
+    ['run', '--no-cache', resolveCustomization, '--skill', prdSkill, '--project-root', projectRoot, '--key', 'workflow'],
+    'resolve bmad-prd customization',
+  );
+  const parsed = JSON.parse(customization);
+  if (!parsed || typeof parsed !== 'object') {
+    throw new Error('PRD customization did not resolve to an object');
+  }
+
+  const workspace = path.join(projectRoot, '_bmad-output', 'smoke-prd');
+  run('uv', ['run', '--no-cache', memlog, 'init', '--workspace', workspace, '--field', 'topic=smoke'], 'init memlog');
+  run(
+    'uv',
+    ['run', '--no-cache', memlog, 'append', '--workspace', workspace, '--type', 'decision', '--text', 'integration smoke decision'],
+    'append memlog',
+  );
+  const memlogPath = path.join(workspace, '.memlog.md');
+  const contents = await readFile(memlogPath, 'utf8');
+  if (!contents.includes('integration smoke decision')) {
+    throw new Error('Memlog append did not persist the smoke decision');
+  }
+}
+
 try {
   run('uv', ['--version'], 'uv availability');
 
-  // Exercise one skill from each major BMAD layer against the same fresh project.
+  // Exercise representative core, planning, and implementation skills.
   await bootstrap('bmad-brainstorming');
   await bootstrap('bmad-prd');
   await bootstrap('bmad-build');
@@ -79,11 +108,13 @@ try {
     throw new Error('Bootstrap overwrote existing BMAD project configuration');
   }
 
-  // Exercise the same render path ChatGPT follows for implementation workflows.
-  await render('bmad-build');
-  await render('bmad-code-review');
+  // Exercise a direct/conversational workflow's shared utilities.
+  await exercisePrdRuntime();
 
-  console.log('Integration smoke passed: bootstrap, config preservation, build render, code-review render');
+  // Exercise the rendered implementation path used by bmad-build.
+  await render('bmad-build');
+
+  console.log('Integration smoke passed: bootstrap, config preservation, PRD runtime, build render');
 } finally {
   await rm(projectRoot, { recursive: true, force: true });
 }
