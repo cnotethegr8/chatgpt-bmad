@@ -20,7 +20,7 @@ on:
   schedule:
     - cron: '17 4 * * *'
   push:
-    branches: [main, test/compat-failure-harness]
+    branches: [main]
     paths:
       - 'scripts/**'
       - 'package.json'
@@ -32,7 +32,7 @@ permissions:
   issues: write
 
 concurrency:
-  group: sync-bmad-${{ github.ref }}
+  group: sync-bmad
   cancel-in-progress: false
 
 jobs:
