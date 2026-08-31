@@ -7,7 +7,8 @@
     "sync": "node scripts/sync-bmad.mjs",
     "build": "node scripts/build-plugin.mjs",
     "check": "node scripts/validate-manifest.mjs && node scripts/validate-plugin.mjs",
-    "integration": "node scripts/integration-smoke.mjs"
+    "integration": "node scripts/integration-smoke.mjs",
+    "test:compat": "node --test scripts/compatibility-incident.test.mjs"
   },
   "engines": {
     "node": ">=20"
