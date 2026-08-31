@@ -107,19 +107,43 @@ This allows the ChatGPT version to follow BMAD development without becoming a se
 
 ## Development
 
-Requires **Node.js 20+**.
+Requires **Node.js 20+** and **Git**.
+
+Clone this repository:
 
 ```bash
 git clone https://github.com/cnotethegr8/chatgpt-bmad.git
 cd chatgpt-bmad
+```
 
-git clone --depth 1 https://github.com/bmad-code-org/BMAD-METHOD.git .tmp/bmad
+### Regenerate the full distribution
 
+For the normal contributor workflow, run:
+
+```bash
+npm run regenerate
+```
+
+This command:
+
+1. syncs the latest upstream BMAD metadata
+2. refreshes the local BMAD checkout in `.tmp/bmad`
+3. rebuilds the ChatGPT/OpenAI plugin
+4. validates the generated distribution
+5. runs the runtime integration smoke tests
+
+### Run individual stages
+
+The underlying commands are also available when working on a specific part of the pipeline:
+
+```bash
 npm run sync
 npm run build -- .tmp/bmad
 npm run check
 npm run integration
 ```
+
+`npm run build -- .tmp/bmad` expects a BMAD checkout at `.tmp/bmad`. The `npm run regenerate` command creates and refreshes that checkout automatically.
 
 ## About BMAD Method
 
