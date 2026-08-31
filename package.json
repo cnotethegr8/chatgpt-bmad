@@ -1,11 +1,12 @@
 {
   "name": "chatgpt-bmad",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "type": "module",
   "scripts": {
     "sync": "node scripts/sync-bmad.mjs",
-    "check": "node scripts/validate-manifest.mjs"
+    "build": "node scripts/build-plugin.mjs",
+    "check": "node scripts/validate-manifest.mjs && node scripts/validate-plugin.mjs"
   },
   "engines": {
     "node": ">=20"
