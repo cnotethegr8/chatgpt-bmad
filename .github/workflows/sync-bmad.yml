@@ -22,21 +22,27 @@ jobs:
         with:
           node-version: 20
 
-      - name: Sync upstream BMAD
+      - name: Clone upstream BMAD
+        run: git clone --depth 1 https://github.com/bmad-code-org/BMAD-METHOD.git .tmp/bmad
+
+      - name: Sync upstream metadata
         run: npm run sync
 
-      - name: Validate manifest
+      - name: Build ChatGPT marketplace
+        run: npm run build -- .tmp/bmad
+
+      - name: Validate generated distribution
         run: npm run check
 
-      - name: Commit upstream changes
+      - name: Commit generated changes
         shell: bash
         run: |
-          if git diff --quiet -- upstream/; then
-            echo "BMAD is already current."
+          if git diff --quiet -- upstream/ plugin/ .claude-plugin/; then
+            echo "BMAD distribution is already current."
             exit 0
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add upstream/
-          git commit -m "chore: sync upstream BMAD"
+          git add upstream/ plugin/ .claude-plugin/
+          git commit -m "chore: sync upstream BMAD distribution"
           git push
