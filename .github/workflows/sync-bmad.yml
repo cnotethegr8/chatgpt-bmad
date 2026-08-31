@@ -29,6 +29,8 @@ jobs:
         with:
           node-version: 20
 
+      - uses: astral-sh/setup-uv@v6
+
       - name: Clone upstream BMAD
         run: git clone --depth 1 https://github.com/bmad-code-org/BMAD-METHOD.git .tmp/bmad
 
@@ -40,6 +42,9 @@ jobs:
 
       - name: Validate generated distribution
         run: npm run check
+
+      - name: Runtime integration smoke
+        run: npm run integration
 
       - name: Commit generated changes
         shell: bash
