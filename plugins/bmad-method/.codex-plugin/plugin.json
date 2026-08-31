@@ -1,0 +1,37 @@
+{
+  "name": "bmad-method",
+  "version": "6.11.0",
+  "description": "Full-lifecycle AI development framework — agents and workflows for product analysis, planning, architecture, and implementation.",
+  "author": {
+    "name": "Brian (BMad) Madison"
+  },
+  "homepage": "https://github.com/bmad-code-org/BMAD-METHOD",
+  "repository": "https://github.com/cnotethegr8/chatgpt-bmad",
+  "license": "MIT",
+  "keywords": [
+    "bmad",
+    "agile",
+    "ai",
+    "development",
+    "planning",
+    "implementation"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "BMAD Method",
+    "shortDescription": "Full-lifecycle agile AI development workflows",
+    "longDescription": "The complete BMAD Method skill library for analysis, product planning, UX, architecture, implementation, review, QA, and retrospectives.",
+    "developerName": "BMAD Method / chatgpt-bmad",
+    "category": "Developer Tools",
+    "capabilities": [
+      "Interactive",
+      "Write"
+    ],
+    "websiteURL": "https://github.com/bmad-code-org/BMAD-METHOD",
+    "defaultPrompt": [
+      "Use BMAD to take this feature from idea to implementation.",
+      "Use BMAD to plan and build this issue.",
+      "Review this project with BMAD and recommend the next workflow."
+    ]
+  }
+}

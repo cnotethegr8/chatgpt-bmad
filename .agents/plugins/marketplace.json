@@ -1,0 +1,20 @@
+{
+  "name": "chatgpt-bmad",
+  "interface": {
+    "displayName": "BMAD Method"
+  },
+  "plugins": [
+    {
+      "name": "bmad-method",
+      "source": {
+        "source": "local",
+        "path": "./plugins/bmad-method"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Developer Tools"
+    }
+  ]
+}
