@@ -1,0 +1,50 @@
+{
+  "name": "chatgpt-bmad",
+  "owner": {
+    "name": "chatgpt-bmad"
+  },
+  "description": "ChatGPT-compatible distribution of the complete BMAD Method skill library.",
+  "repository": "https://github.com/cnotethegr8/chatgpt-bmad",
+  "plugins": [
+    {
+      "name": "bmad-method",
+      "displayName": "BMAD Method",
+      "source": "./plugin",
+      "description": "Full-lifecycle AI development framework — agents and workflows for product analysis, planning, architecture, and implementation.",
+      "version": "6.11.0",
+      "author": {
+        "name": "Brian (BMad) Madison"
+      },
+      "skills": [
+        "./skills/bmad-agent-analyst",
+        "./skills/bmad-agent-architect",
+        "./skills/bmad-agent-dev",
+        "./skills/bmad-agent-pm",
+        "./skills/bmad-agent-ux-designer",
+        "./skills/bmad-architecture",
+        "./skills/bmad-create-epics-and-stories",
+        "./skills/bmad-prd",
+        "./skills/bmad-prfaq",
+        "./skills/bmad-product-brief",
+        "./skills/bmad-project-context",
+        "./skills/bmad-spec",
+        "./skills/bmad-sprint-planning",
+        "./skills/bmad-ux",
+        "./skills/bmad-build",
+        "./skills/bmad-code-review",
+        "./skills/bmad-correct-course",
+        "./skills/bmad-qa-generate-e2e-tests",
+        "./skills/bmad-retrospective",
+        "./skills/bmad-walkthrough",
+        "./skills/bmad-advanced-elicitation",
+        "./skills/bmad-brainstorming",
+        "./skills/bmad-customize",
+        "./skills/bmad-deep-recon",
+        "./skills/bmad-forge-idea",
+        "./skills/bmad-help",
+        "./skills/bmad-party-mode",
+        "./skills/bmad-review"
+      ]
+    }
+  ]
+}

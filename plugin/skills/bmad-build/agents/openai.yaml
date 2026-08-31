@@ -1,0 +1,3 @@
+interface:
+  display_name: "BMad build"
+  short_description: "BMAD Method workflow: bmad-build"

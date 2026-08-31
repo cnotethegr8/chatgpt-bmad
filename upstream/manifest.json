@@ -1,0 +1,179 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-08-31T07:49:00.507Z",
+  "upstream": {
+    "repository": "bmad-code-org/BMAD-METHOD",
+    "branch": "main",
+    "sha": "bd7ee167eb2130508c0d9240675b416e94d4bb60",
+    "committedAt": "2026-08-31T04:13:42Z",
+    "message": "docs(security): add email channel and define the framework security model (#2803)\n\nPrivate vulnerability reporting is now enabled on the repo, so the\nadvisory link in this policy resolves. Adds security@bmadcode.com as a\nsecond channel, replaces the unmet response SLA with best-effort\nlanguage, and adds a Security Model section so scope decisions rest on a\nstated trust boundary rather than case-by-case argument.\n\n\nClaude-Session: https://claude.ai/code/session_014nrWo411353cGjRBpMLpfV\n\nCo-authored-by: Claude Opus 5 (1M context) <noreply@anthropic.com>"
+  },
+  "roots": {
+    "src": [
+      {
+        "name": "bmm-skills",
+        "path": "src/bmm-skills",
+        "sha": "3b05441ee4f571c2d7a1a437351339500ecdd611",
+        "size": 0,
+        "type": "dir",
+        "downloadUrl": null
+      },
+      {
+        "name": "core-skills",
+        "path": "src/core-skills",
+        "sha": "19b99d85e90f9e848c011b29e57819739abe2dcd",
+        "size": 0,
+        "type": "dir",
+        "downloadUrl": null
+      },
+      {
+        "name": "scripts",
+        "path": "src/scripts",
+        "sha": "25c889394b188f256dac8dbce1d96273677fdd54",
+        "size": 0,
+        "type": "dir",
+        "downloadUrl": null
+      }
+    ],
+    "bmmSkills": [
+      {
+        "name": "agents",
+        "path": "src/bmm-skills/agents",
+        "sha": "3d76942adb4e38dbe039684e54edee14543bf77a",
+        "size": 0,
+        "type": "dir",
+        "downloadUrl": null
+      },
+      {
+        "name": "module-help.csv",
+        "path": "src/bmm-skills/module-help.csv",
+        "sha": "e031b73e841613a0fe4bb621024e991845ea3773",
+        "size": 4893,
+        "type": "file",
+        "downloadUrl": "https://raw.githubusercontent.com/bmad-code-org/BMAD-METHOD/bd7ee167eb2130508c0d9240675b416e94d4bb60/src/bmm-skills/module-help.csv"
+      },
+      {
+        "name": "module.yaml",
+        "path": "src/bmm-skills/module.yaml",
+        "sha": "2d1d9d3826e845161497541d9db442ef34d650f7",
+        "size": 3988,
+        "type": "file",
+        "downloadUrl": "https://raw.githubusercontent.com/bmad-code-org/BMAD-METHOD/bd7ee167eb2130508c0d9240675b416e94d4bb60/src/bmm-skills/module.yaml"
+      },
+      {
+        "name": "plan",
+        "path": "src/bmm-skills/plan",
+        "sha": "a34ae161fd435bb2c0f5c9f09d327d252a62ece4",
+        "size": 0,
+        "type": "dir",
+        "downloadUrl": null
+      },
+      {
+        "name": "ship",
+        "path": "src/bmm-skills/ship",
+        "sha": "2ee65dc9c2e9ae106ffd6feb659c0aa768013d05",
+        "size": 0,
+        "type": "dir",
+        "downloadUrl": null
+      },
+      {
+        "name": "v6-shims",
+        "path": "src/bmm-skills/v6-shims",
+        "sha": "4873e5fb015b168822f6239f1ec7bb77082a5252",
+        "size": 0,
+        "type": "dir",
+        "downloadUrl": null
+      }
+    ],
+    "coreSkills": [
+      {
+        "name": "bmad-advanced-elicitation",
+        "path": "src/core-skills/bmad-advanced-elicitation",
+        "sha": "84ffb37ac6272549edd2bf0c8323e0e5cb75e05d",
+        "size": 0,
+        "type": "dir",
+        "downloadUrl": null
+      },
+      {
+        "name": "bmad-brainstorming",
+        "path": "src/core-skills/bmad-brainstorming",
+        "sha": "57285a37b2f1abfb0e1786f19ca97666b586060f",
+        "size": 0,
+        "type": "dir",
+        "downloadUrl": null
+      },
+      {
+        "name": "bmad-customize",
+        "path": "src/core-skills/bmad-customize",
+        "sha": "9e468e5bbbb17797af5b616796d8671bc268ec18",
+        "size": 0,
+        "type": "dir",
+        "downloadUrl": null
+      },
+      {
+        "name": "bmad-deep-recon",
+        "path": "src/core-skills/bmad-deep-recon",
+        "sha": "965695b68ac62118932f4a508d74f76783439a06",
+        "size": 0,
+        "type": "dir",
+        "downloadUrl": null
+      },
+      {
+        "name": "bmad-forge-idea",
+        "path": "src/core-skills/bmad-forge-idea",
+        "sha": "2a6b0f93998c3887146bc0fb221306a084d5e220",
+        "size": 0,
+        "type": "dir",
+        "downloadUrl": null
+      },
+      {
+        "name": "bmad-help",
+        "path": "src/core-skills/bmad-help",
+        "sha": "e13d7012898ba5eb8e6f4a0091f58b656cacce62",
+        "size": 0,
+        "type": "dir",
+        "downloadUrl": null
+      },
+      {
+        "name": "bmad-party-mode",
+        "path": "src/core-skills/bmad-party-mode",
+        "sha": "0bdca872bc2d6a4770ffe54e925ee436cac60653",
+        "size": 0,
+        "type": "dir",
+        "downloadUrl": null
+      },
+      {
+        "name": "bmad-review",
+        "path": "src/core-skills/bmad-review",
+        "sha": "0b4c021f825b277e8a36732a22dd8c85a4245601",
+        "size": 0,
+        "type": "dir",
+        "downloadUrl": null
+      },
+      {
+        "name": "module-help.csv",
+        "path": "src/core-skills/module-help.csv",
+        "sha": "a422f0997521932b4b24c83975805dc96f45bd02",
+        "size": 2562,
+        "type": "file",
+        "downloadUrl": "https://raw.githubusercontent.com/bmad-code-org/BMAD-METHOD/bd7ee167eb2130508c0d9240675b416e94d4bb60/src/core-skills/module-help.csv"
+      },
+      {
+        "name": "module.yaml",
+        "path": "src/core-skills/module.yaml",
+        "sha": "814cbc23c63b9bb29ef84deaa50d51bfa2fb2ccf",
+        "size": 1104,
+        "type": "file",
+        "downloadUrl": "https://raw.githubusercontent.com/bmad-code-org/BMAD-METHOD/bd7ee167eb2130508c0d9240675b416e94d4bb60/src/core-skills/module.yaml"
+      },
+      {
+        "name": "v6-shims",
+        "path": "src/core-skills/v6-shims",
+        "sha": "12716e90dedf97c7434fcc1b8344cd3db5a7a368",
+        "size": 0,
+        "type": "dir",
+        "downloadUrl": null
+      }
+    ]
+  }
+}
