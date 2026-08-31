@@ -21,7 +21,7 @@
     "displayName": "BMAD Method",
     "shortDescription": "Full-lifecycle agile AI development workflows",
     "longDescription": "The complete BMAD Method skill library for analysis, product planning, UX, architecture, implementation, review, QA, and retrospectives.",
-    "developerName": "BMAD Method",
+    "developerName": "BMAD Method / chatgpt-bmad",
     "category": "Developer Tools",
     "capabilities": [
       "Interactive",
