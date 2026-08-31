@@ -41,7 +41,8 @@ async function render(skillName) {
     `render ${skillName}`,
   );
 
-  const workflowPath = output.split(/\r?\n/).filter(Boolean).at(-1);
+  const handoff = output.split(/\r?\n/).filter(Boolean).at(-1) ?? '';
+  const workflowPath = handoff.replace(/^read and follow\s+/, '').trim();
   if (!workflowPath || !path.isAbsolute(workflowPath)) {
     throw new Error(`Renderer did not return an absolute workflow path for ${skillName}: ${output}`);
   }
