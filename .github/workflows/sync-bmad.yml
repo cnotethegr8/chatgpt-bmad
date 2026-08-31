@@ -10,6 +10,7 @@ on:
       - 'scripts/**'
       - 'package.json'
       - '.github/workflows/sync-bmad.yml'
+      - '.gitignore'
 
 permissions:
   contents: write
@@ -43,7 +44,7 @@ jobs:
       - name: Commit generated changes
         shell: bash
         run: |
-          git add upstream/ plugin/ .claude-plugin/
+          git add -A
           if git diff --cached --quiet; then
             echo "BMAD distribution is already current."
             exit 0
