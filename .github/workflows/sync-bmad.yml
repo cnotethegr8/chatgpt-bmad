@@ -4,6 +4,12 @@ on:
   workflow_dispatch:
   schedule:
     - cron: '17 4 * * *'
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/**'
+      - 'package.json'
+      - '.github/workflows/sync-bmad.yml'
 
 permissions:
   contents: write
