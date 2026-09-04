@@ -1,19 +1,19 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-09-03T08:57:29.248Z",
+  "generatedAt": "2026-09-04T08:52:13.271Z",
   "upstream": {
     "repository": "bmad-code-org/BMAD-METHOD",
     "branch": "main",
-    "sha": "891c0abbc1128f318e098a566f925155022aef12",
-    "committedAt": "2026-09-02T06:04:52Z",
-    "message": "fix(skills): narrow bmad-build maintenance trigger (#2820)"
+    "sha": "05bfbd46d00766ec88eb9b42e76be2c575d64d7b",
+    "committedAt": "2026-09-04T02:30:56Z",
+    "message": "chore(release): v6.12.0 [skip ci]"
   },
   "roots": {
     "src": [
       {
         "name": "bmm-skills",
         "path": "src/bmm-skills",
-        "sha": "1dc5d7bf98aba643973bd1789a411a55756a7b5c",
+        "sha": "f6777c4cb4d30de7d397adfa1674c7a7e225b9f2",
         "size": 0,
         "type": "dir",
         "downloadUrl": null
@@ -50,7 +50,7 @@
         "sha": "e031b73e841613a0fe4bb621024e991845ea3773",
         "size": 4893,
         "type": "file",
-        "downloadUrl": "https://raw.githubusercontent.com/bmad-code-org/BMAD-METHOD/891c0abbc1128f318e098a566f925155022aef12/src/bmm-skills/module-help.csv"
+        "downloadUrl": "https://raw.githubusercontent.com/bmad-code-org/BMAD-METHOD/05bfbd46d00766ec88eb9b42e76be2c575d64d7b/src/bmm-skills/module-help.csv"
       },
       {
         "name": "module.yaml",
@@ -58,7 +58,7 @@
         "sha": "2d1d9d3826e845161497541d9db442ef34d650f7",
         "size": 3988,
         "type": "file",
-        "downloadUrl": "https://raw.githubusercontent.com/bmad-code-org/BMAD-METHOD/891c0abbc1128f318e098a566f925155022aef12/src/bmm-skills/module.yaml"
+        "downloadUrl": "https://raw.githubusercontent.com/bmad-code-org/BMAD-METHOD/05bfbd46d00766ec88eb9b42e76be2c575d64d7b/src/bmm-skills/module.yaml"
       },
       {
         "name": "plan",
@@ -71,7 +71,7 @@
       {
         "name": "ship",
         "path": "src/bmm-skills/ship",
-        "sha": "ed940d67c111f034060653e1edf9c45ca2d0a9ed",
+        "sha": "397ce3dcb8f967100b337bcd3cfffb28fb7d51ea",
         "size": 0,
         "type": "dir",
         "downloadUrl": null
@@ -156,7 +156,7 @@
         "sha": "a422f0997521932b4b24c83975805dc96f45bd02",
         "size": 2562,
         "type": "file",
-        "downloadUrl": "https://raw.githubusercontent.com/bmad-code-org/BMAD-METHOD/891c0abbc1128f318e098a566f925155022aef12/src/core-skills/module-help.csv"
+        "downloadUrl": "https://raw.githubusercontent.com/bmad-code-org/BMAD-METHOD/05bfbd46d00766ec88eb9b42e76be2c575d64d7b/src/core-skills/module-help.csv"
       },
       {
         "name": "module.yaml",
@@ -164,7 +164,7 @@
         "sha": "814cbc23c63b9bb29ef84deaa50d51bfa2fb2ccf",
         "size": 1104,
         "type": "file",
-        "downloadUrl": "https://raw.githubusercontent.com/bmad-code-org/BMAD-METHOD/891c0abbc1128f318e098a566f925155022aef12/src/core-skills/module.yaml"
+        "downloadUrl": "https://raw.githubusercontent.com/bmad-code-org/BMAD-METHOD/05bfbd46d00766ec88eb9b42e76be2c575d64d7b/src/core-skills/module.yaml"
       },
       {
         "name": "v6-shims",
