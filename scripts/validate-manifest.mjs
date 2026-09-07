@@ -11,7 +11,12 @@ const fail = (message) => {
 if (manifest.schemaVersion !== 1) fail('Unsupported manifest schemaVersion');
 if (!/^[0-9a-f]{40}$/.test(manifest.upstream?.sha ?? '')) fail('Invalid upstream SHA');
 if (manifest.upstream?.sha !== version) fail('VERSION does not match manifest SHA');
-if (!Array.isArray(manifest.roots?.bmmSkills)) fail('Missing bmmSkills inventory');
-if (!Array.isArray(manifest.roots?.coreSkills)) fail('Missing coreSkills inventory');
+if (manifest.roots?.layout === 'flat') {
+  if (!Array.isArray(manifest.roots?.skills)) fail('Missing flat skills inventory');
+  if (!Array.isArray(manifest.roots?.runtimeScripts)) fail('Missing flat runtime scripts inventory');
+} else {
+  if (!Array.isArray(manifest.roots?.bmmSkills)) fail('Missing bmmSkills inventory');
+  if (!Array.isArray(manifest.roots?.coreSkills)) fail('Missing coreSkills inventory');
+}
 
 if (!process.exitCode) console.log(`Manifest valid for BMAD ${version}`);
