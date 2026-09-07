@@ -1,11 +1,15 @@
 import { cp, mkdir, readFile, rm, writeFile } from 'node:fs/promises';
 import path from 'node:path';
+import { discoverUpstreamLayout } from './upstream-layout.mjs';
 
 const upstreamRoot = process.argv[2] ?? '.tmp/bmad';
 const pluginRoot = path.join('plugins', 'bmad-method');
-const sourceMarketplace = JSON.parse(await readFile(path.join(upstreamRoot, '.claude-plugin', 'marketplace.json'), 'utf8'));
-const upstreamPlugin = sourceMarketplace.plugins?.[0];
-if (!upstreamPlugin?.skills?.length) throw new Error('Upstream BMAD marketplace has no skills');
+const upstreamLayout = await discoverUpstreamLayout(upstreamRoot);
+const upstreamPlugin = upstreamLayout.plugin ?? {
+  version: upstreamLayout.version,
+  description: 'BMAD Method',
+  author: 'BMAD Method',
+};
 
 // Remove both the current canonical output and the old compatibility layout.
 await rm(pluginRoot, { recursive: true, force: true });
@@ -27,7 +31,7 @@ function injectBootstrap(skillMarkdown) {
   return skillMarkdown.slice(0, insertAt) + adapter + skillMarkdown.slice(insertAt);
 }
 
-for (const relativeSkill of upstreamPlugin.skills) {
+for (const relativeSkill of upstreamLayout.skillPaths) {
   const source = path.resolve(upstreamRoot, relativeSkill);
   const name = path.basename(source);
   const dest = path.join(pluginRoot, 'skills', name);
@@ -46,13 +50,13 @@ for (const relativeSkill of upstreamPlugin.skills) {
   await writeFile(path.join(agentDir, 'openai.yaml'), `interface:\n  display_name: "${displayName}"\n  short_description: "BMAD Method workflow: ${name}"\n`);
 }
 
-await cp(path.join(upstreamRoot, 'src', 'scripts'), path.join(pluginRoot, 'runtime', 'scripts'), { recursive: true });
+await cp(upstreamLayout.runtimeScriptsPath, path.join(pluginRoot, 'runtime', 'scripts'), { recursive: true });
 
 const pluginManifest = {
   name: 'bmad-method',
-  version: upstreamPlugin.version,
-  description: upstreamPlugin.description,
-  author: upstreamPlugin.author,
+  version: upstreamLayout.version,
+  description: upstreamPlugin.description ?? 'BMAD Method',
+  author: upstreamPlugin.author ?? 'BMAD Method',
   homepage: 'https://github.com/bmad-code-org/BMAD-METHOD',
   repository: 'https://github.com/cnotethegr8/chatgpt-bmad',
   license: 'MIT',
@@ -92,5 +96,5 @@ const marketplace = {
   }]
 };
 await writeFile(path.join('.agents', 'plugins', 'marketplace.json'), `${JSON.stringify(marketplace, null, 2)}\n`);
-await writeFile(path.join(pluginRoot, 'UPSTREAM.json'), `${JSON.stringify({ name: sourceMarketplace.name, version: upstreamPlugin.version, skillCount: upstreamPlugin.skills.length }, null, 2)}\n`);
-console.log(`Built canonical OpenAI BMAD plugin with ${upstreamPlugin.skills.length} skills from BMAD ${upstreamPlugin.version}`);
+await writeFile(path.join(pluginRoot, 'UPSTREAM.json'), `${JSON.stringify({ name: upstreamLayout.marketplace?.name ?? 'bmad-method', version: upstreamLayout.version, skillCount: upstreamLayout.skillPaths.length }, null, 2)}\n`);
+console.log(`Built canonical OpenAI BMAD plugin with ${upstreamLayout.skillPaths.length} skills from BMAD ${upstreamLayout.version}`);
