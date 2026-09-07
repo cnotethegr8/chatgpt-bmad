@@ -5,7 +5,7 @@
 
 ## RULES
 
-- YOU MUST ALWAYS SPEAK OUTPUT in your Agent communication style with the config `{communication_language}`
+- YOU MUST ALWAYS SPEAK OUTPUT in your Agent communication style
 
 ## INSTRUCTIONS
 
@@ -51,4 +51,4 @@
 
 ## NEXT
 
-Read fully and follow `./step-04-present.md`
+Read fully and follow `steps/step-04-present.md`

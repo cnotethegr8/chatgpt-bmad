@@ -1,10 +1,8 @@
 {
   "name": "bmad-method",
-  "version": "6.12.0",
-  "description": "Full-lifecycle AI development framework — agents and workflows for product analysis, planning, architecture, and implementation.",
-  "author": {
-    "name": "Brian (BMad) Madison"
-  },
+  "version": "6.13.0-next",
+  "description": "BMAD Method",
+  "author": "BMAD Method",
   "homepage": "https://github.com/bmad-code-org/BMAD-METHOD",
   "repository": "https://github.com/cnotethegr8/chatgpt-bmad",
   "license": "MIT",

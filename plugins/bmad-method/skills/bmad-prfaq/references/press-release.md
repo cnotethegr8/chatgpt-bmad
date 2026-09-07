@@ -1,5 +1,3 @@
-**Language:** Use `{communication_language}` for all output.
-**Output Language:** Use `{document_output_language}` for documents.
 **Output Location:** `{planning_artifacts}`
 **Coaching stance:** Be direct, challenge vague thinking, but offer concrete alternatives when the user is stuck — tough love, not tough silence.
 
@@ -57,4 +55,4 @@ Before moving on, append a brief `<!-- coaching-notes-stage-2 -->` block to the 
 
 This stage is complete when the full press release reads as a coherent, compelling announcement that a real customer would find relevant. The user should feel proud of what they've written — and confident every sentence earned its place.
 
-Route to `./customer-faq.md`.
+Route to `references/customer-faq.md`.

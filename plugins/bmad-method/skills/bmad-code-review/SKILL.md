@@ -52,18 +52,16 @@ Treat every entry in `{workflow.persistent_facts}` as foundational context you c
 
 ### Step 4: Load Config
 
-Load config from `{project-root}/_bmad/bmm/config.yaml` and resolve:
+Run: `uv run {project-root}/_bmad/scripts/resolve_config.py --project-root {project-root} --key core.project_name --key modules.bmm.planning_artifacts --key modules.bmm.implementation_artifacts`
 
-- `project_name`, `planning_artifacts`, `implementation_artifacts`, `user_name`
-- `communication_language`, `document_output_language`, `user_skill_level`
 - `date` as system-generated current datetime
 - `sprint_status` = `{implementation_artifacts}/sprint-status.yaml`
 - `project_context` = `**/project-context.md` (load if exists)
-- YOU MUST ALWAYS SPEAK OUTPUT in your Agent communication style with the config `{communication_language}`
+- YOU MUST ALWAYS SPEAK OUTPUT in your Agent communication style
 
 ### Step 5: Greet the User
 
-Greet `{user_name}`, speaking in `{communication_language}`.
+Greet the user.
 
 ### Step 6: Execute Append Steps
 
@@ -98,4 +96,4 @@ This uses **step-file architecture** for disciplined execution:
 
 ## FIRST STEP
 
-Read fully and follow: `./steps/step-01-gather-context.md`
+Read fully and follow: `steps/step-01-gather-context.md`

@@ -51,17 +51,14 @@ Treat every entry in `{workflow.persistent_facts}` as foundational context you c
 
 ### Step 4: Load Config
 
-Load config from `{project-root}/_bmad/bmm/config.yaml` and resolve:
+Run: `uv run {project-root}/_bmad/scripts/resolve_config.py --project-root {project-root} --key core.project_name --key modules.bmm.implementation_artifacts`
 
-- `project_name`, `user_name`
-- `communication_language`, `document_output_language`
-- `implementation_artifacts`
 - `date` as system-generated current datetime
-- YOU MUST ALWAYS SPEAK OUTPUT in your Agent communication style with the config `{communication_language}`
+- YOU MUST ALWAYS SPEAK OUTPUT in your Agent communication style
 
 ### Step 5: Greet the User
 
-Greet `{user_name}`, speaking in `{communication_language}`.
+Greet the user.
 
 ### Step 6: Execute Append Steps
 
@@ -178,7 +175,7 @@ If the project needs:
 
 Save summary to: `{default_output_file}`
 
-**Done!** Tests generated and verified. Validate against `./checklist.md`.
+**Done!** Tests generated and verified. Validate against `checklist.md`.
 
 ## On Complete
 

@@ -12,7 +12,7 @@ To generate all epics with their stories based on the approved epics_list, follo
 - 📖 CRITICAL: Read the complete step file before taking any action
 - 🔄 CRITICAL: Process epics sequentially
 - 📋 YOU ARE A FACILITATOR, not a content generator
-- ✅ YOU MUST ALWAYS SPEAK OUTPUT In your Agent communication style with the config `{communication_language}`
+- ✅ YOU MUST ALWAYS SPEAK OUTPUT In your Agent communication style
 
 ### Role Reinforcement:
 
@@ -228,7 +228,7 @@ Display: "**Select an Option:** [A] Advanced Elicitation [P] Party Mode [C] Cont
 
 ## CRITICAL STEP COMPLETION NOTE
 
-ONLY WHEN [C continue option] is selected and [all epics and stories saved to document following the template structure exactly], will you then read fully and follow: `./step-04-final-validation.md` to begin final validation phase.
+ONLY WHEN [C continue option] is selected and [all epics and stories saved to document following the template structure exactly], will you then read fully and follow: `steps/step-04-final-validation.md` to begin final validation phase.
 
 ---
 

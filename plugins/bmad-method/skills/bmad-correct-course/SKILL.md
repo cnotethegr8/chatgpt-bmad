@@ -51,23 +51,15 @@ Treat every entry in `{workflow.persistent_facts}` as foundational context you c
 
 ### Step 4: Load Config
 
-Load config from `{project-root}/_bmad/bmm/config.yaml` and resolve:
+Run: `uv run {project-root}/_bmad/scripts/resolve_config.py --project-root {project-root} --key core.project_name --key modules.bmm.implementation_artifacts --key modules.bmm.planning_artifacts --key modules.bmm.project_knowledge`
 
-- `project_name`, `user_name`
-- `communication_language`, `document_output_language`
-- `user_skill_level`
-- `implementation_artifacts`
-- `planning_artifacts`
-- `project_knowledge`
 - `date` as system-generated current datetime
-- YOU MUST ALWAYS SPEAK OUTPUT in your Agent communication style with the config `{communication_language}`
-- Language MUST be tailored to `{user_skill_level}`
-- Generate all documents in `{document_output_language}`
-- DOCUMENT OUTPUT: Updated epics, stories, or PRD sections. Clear, actionable changes. User skill level (`{user_skill_level}`) affects conversation style ONLY, not document updates.
+- YOU MUST ALWAYS SPEAK OUTPUT in your Agent communication style
+- DOCUMENT OUTPUT: Updated epics, stories, or PRD sections. Clear, actionable changes.
 
 ### Step 5: Greet the User
 
-Greet `{user_name}`, speaking in `{communication_language}`.
+Greet the user.
 
 ### Step 6: Execute Append Steps
 
@@ -311,7 +303,7 @@ Activation is complete. If `activation_steps_prepend` or `activation_steps_appen
 - Specific edit proposals with before/after
 - Implementation handoff plan
 
-<action>Report workflow completion to user with personalized message: "Correct Course workflow complete, {user_name}!"</action>
+<action>Report workflow completion to user: "Correct Course workflow complete!"</action>
 <action>Remind user of success criteria and next steps for Developer agent</action>
 <action>Run: `uv run {project-root}/_bmad/scripts/resolve_customization.py --skill {skill-root} --project-root {project-root} --key workflow.on_complete` — if the resolved value is non-empty, follow it as the final terminal instruction before exiting.</action>
 </step>

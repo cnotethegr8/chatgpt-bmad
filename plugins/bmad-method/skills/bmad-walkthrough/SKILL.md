@@ -51,16 +51,11 @@ Treat every entry in `{workflow.persistent_facts}` as foundational context you c
 
 ### Step 4: Load Config
 
-Load config from `{project-root}/_bmad/bmm/config.yaml` and resolve:
-
-- `implementation_artifacts`
-- `planning_artifacts`
-- `communication_language`
-- `document_output_language`
+Run: `uv run {project-root}/_bmad/scripts/resolve_config.py --project-root {project-root} --key modules.bmm.implementation_artifacts --key modules.bmm.planning_artifacts`
 
 ### Step 5: Greet the User
 
-Greet the user, speaking in `{communication_language}`.
+Greet the user.
 
 ### Step 6: Execute Append Steps
 
@@ -72,8 +67,7 @@ Activation is complete. If `activation_steps_prepend` or `activation_steps_appen
 
 - **Path:line format** — Every code reference must use CWD-relative `path:line` format (no leading `/`) so it is clickable in IDE-embedded terminals (e.g., `src/auth/middleware.ts:42`).
 - **Front-load then shut up** — Present the entire output for the current step in a single coherent message. Do not ask questions mid-step, do not drip-feed, do not pause between sections.
-- **Language** — Speak in `{communication_language}`. Write any file output in `{document_output_language}`.
 
 ## FIRST STEP
 
-Read fully and follow `./step-01-orientation.md` to begin.
+Read fully and follow `steps/step-01-orientation.md` to begin.
