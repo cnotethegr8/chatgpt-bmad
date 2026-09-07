@@ -75,7 +75,7 @@ jobs:
         shell: bash
         run: |
           git -C .tmp/bmad rev-parse HEAD > .tmp/compat/upstream-sha
-          node -e "const p=require('./.tmp/bmad/package.json'); process.stdout.write(String(p.version || ''))" > .tmp/compat/upstream-version
+          node scripts/upstream-version.mjs .tmp/bmad > .tmp/compat/upstream-version
 
       - name: Sync upstream metadata
         id: upstream_sync
