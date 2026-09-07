@@ -15,10 +15,12 @@ if (manifest.name !== pluginEntry.name) {
 }
 if (manifest.skills !== './skills/') throw new Error(`Unexpected plugin skills path: ${manifest.skills}`);
 
+const upstream = JSON.parse(await readFile(path.join(pluginRoot, 'UPSTREAM.json'), 'utf8'));
 const skillsRoot = path.join(pluginRoot, 'skills');
 const skillNames = (await import('node:fs/promises')).readdir(skillsRoot, { withFileTypes: true });
 const dirs = (await skillNames).filter((entry) => entry.isDirectory()).map((entry) => entry.name).sort();
-if (dirs.length !== 28) throw new Error(`Expected 28 BMAD skills, found ${dirs.length}`);
+if (!Number.isInteger(upstream.skillCount) || upstream.skillCount < 1) throw new Error(`Invalid upstream skill count: ${upstream.skillCount}`);
+if (dirs.length !== upstream.skillCount) throw new Error(`Expected ${upstream.skillCount} BMAD skills, found ${dirs.length}`);
 
 const seen = new Set();
 for (const name of dirs) {

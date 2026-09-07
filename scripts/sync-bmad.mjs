@@ -1,4 +1,5 @@
 import { mkdir, writeFile } from 'node:fs/promises';
+import { discoverRemoteRoots } from './upstream-layout.mjs';
 
 const OWNER = 'bmad-code-org';
 const REPO = 'BMAD-METHOD';
@@ -14,7 +15,9 @@ const headers = {
 async function github(path) {
   const response = await fetch(`${API}${path}`, { headers });
   if (!response.ok) {
-    throw new Error(`GitHub ${response.status}: ${path}`);
+    const error = new Error(`GitHub ${response.status}: ${path}`);
+    error.status = response.status;
+    throw error;
   }
   return response.json();
 }
@@ -34,12 +37,7 @@ async function listDirectory(path, ref) {
 
 const commit = await github(`/commits/${BRANCH}`);
 const sha = commit.sha;
-
-const roots = {
-  src: await listDirectory('src', sha),
-  bmmSkills: await listDirectory('src/bmm-skills', sha),
-  coreSkills: await listDirectory('src/core-skills', sha),
-};
+const roots = await discoverRemoteRoots(listDirectory, sha);
 
 const manifest = {
   schemaVersion: 1,
@@ -58,6 +56,9 @@ await mkdir('upstream', { recursive: true });
 await writeFile('upstream/VERSION', `${sha}\n`);
 await writeFile('upstream/manifest.json', `${JSON.stringify(manifest, null, 2)}\n`);
 
-console.log(`Normalized BMAD ${sha}`);
-console.log(`bmm-skills entries: ${roots.bmmSkills.length}`);
-console.log(`core-skills entries: ${roots.coreSkills.length}`);
+console.log(`Normalized BMAD ${sha} (${roots.layout} layout)`);
+if (roots.layout === 'flat') console.log(`skills entries: ${roots.skills.length}`);
+else {
+  console.log(`bmm-skills entries: ${roots.bmmSkills.length}`);
+  console.log(`core-skills entries: ${roots.coreSkills.length}`);
+}
