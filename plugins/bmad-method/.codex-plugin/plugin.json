@@ -2,9 +2,7 @@
   "name": "bmad-method",
   "version": "6.13.0-next",
   "description": "BMAD Method",
-  "author": {
-    "name": "BMAD Method"
-  },
+  "author": "BMAD Method",
   "homepage": "https://github.com/bmad-code-org/BMAD-METHOD",
   "repository": "https://github.com/cnotethegr8/chatgpt-bmad",
   "license": "MIT",
