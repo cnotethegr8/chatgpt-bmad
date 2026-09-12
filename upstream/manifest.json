@@ -1,12 +1,12 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-09-11T08:56:37.519Z",
+  "generatedAt": "2026-09-12T08:39:32.036Z",
   "upstream": {
     "repository": "bmad-code-org/BMAD-METHOD",
     "branch": "main",
-    "sha": "abe4eb1bce919c9d22cd18b3519353d5824c4b75",
-    "committedAt": "2026-09-06T03:52:43Z",
-    "message": "chore(review): point CodeRabbit at dev and the moved ESLint config (#2838)\n\nbase_branches listed main, which is the default branch and needs no\nlisting, while every PR now targets dev. The path filter still named\neslint.config.mjs at the root; it moved to docs-site/ in #2834."
+    "sha": "94b6727b00c8316557828c8a8ff2a48ff60d60cc",
+    "committedAt": "2026-09-11T22:45:10Z",
+    "message": "refactor(renderer): render skill sources as Jinja2 templates (#2857)\n\nReplace the regex token substitution and the line-parsed bmad-if\ndirectives in render_skill.py with Jinja2. Templates see config,\nworkflow, and snapshot(); undefined names, empty entry files, and\nlinks to omitted sources halt; every value a render reaches and the\nJinja2 version key the generation. Migrate the five rendered skills'\nsources to the new forms, keep their shipped output byte-identical,\nand update the validator rule and the authoring docs."
   },
   "roots": {
     "layout": "flat",
@@ -78,7 +78,7 @@
       {
         "name": "bmad-build-auto",
         "path": "skills/bmad-build-auto",
-        "sha": "6100aa93af3e7d3efe040d5c041a5cb7adcfd061",
+        "sha": "47c780fa24157583d4d24a426df9e09f7666540e",
         "size": 0,
         "type": "dir",
         "downloadUrl": null
@@ -86,7 +86,7 @@
       {
         "name": "bmad-build",
         "path": "skills/bmad-build",
-        "sha": "b16deb4be37d82cd5162e2d2c6e4b121f953149c",
+        "sha": "e20e19251fb358141eb47b0a78adcdc139e2f958",
         "size": 0,
         "type": "dir",
         "downloadUrl": null
@@ -94,7 +94,7 @@
       {
         "name": "bmad-code-review",
         "path": "skills/bmad-code-review",
-        "sha": "cab19df61de71b7b1cd4401ca2d4a3f9e0912c0c",
+        "sha": "b67ca106616e81649ce3870c663553503ca6741b",
         "size": 0,
         "type": "dir",
         "downloadUrl": null
@@ -190,7 +190,7 @@
       {
         "name": "bmad-retrospective",
         "path": "skills/bmad-retrospective",
-        "sha": "4c70a6f34474f623ba419fc53842245ba61f71d0",
+        "sha": "30b08d5ad83378c345edc45af126cecec623569d",
         "size": 0,
         "type": "dir",
         "downloadUrl": null
@@ -230,7 +230,7 @@
       {
         "name": "bmad-walkthrough",
         "path": "skills/bmad-walkthrough",
-        "sha": "e0f4fc6ad803b8723b99d0cf26e24429b5fefd7e",
+        "sha": "24fc2cad93f1ffa5f91df1824bda9c99a8314270",
         "size": 0,
         "type": "dir",
         "downloadUrl": null
@@ -238,7 +238,7 @@
       {
         "name": "bmad",
         "path": "skills/bmad",
-        "sha": "c192a231b44323472dc7a785b949d5d5499cc7f7",
+        "sha": "eabc14d6421e499e56e7d42fbae0c4d2600767b4",
         "size": 0,
         "type": "dir",
         "downloadUrl": null
@@ -251,7 +251,7 @@
         "sha": "55cefc220face9c85c452c9883b0fca7f9accb5e",
         "size": 4096,
         "type": "file",
-        "downloadUrl": "https://raw.githubusercontent.com/bmad-code-org/BMAD-METHOD/abe4eb1bce919c9d22cd18b3519353d5824c4b75/skills/bmad/scripts/config_utils.py"
+        "downloadUrl": "https://raw.githubusercontent.com/bmad-code-org/BMAD-METHOD/94b6727b00c8316557828c8a8ff2a48ff60d60cc/skills/bmad/scripts/config_utils.py"
       },
       {
         "name": "memlog.py",
@@ -259,15 +259,15 @@
         "sha": "736b788e90bd80f74932c5bbc2152f0d0031529b",
         "size": 9258,
         "type": "file",
-        "downloadUrl": "https://raw.githubusercontent.com/bmad-code-org/BMAD-METHOD/abe4eb1bce919c9d22cd18b3519353d5824c4b75/skills/bmad/scripts/memlog.py"
+        "downloadUrl": "https://raw.githubusercontent.com/bmad-code-org/BMAD-METHOD/94b6727b00c8316557828c8a8ff2a48ff60d60cc/skills/bmad/scripts/memlog.py"
       },
       {
         "name": "render_skill.py",
         "path": "skills/bmad/scripts/render_skill.py",
-        "sha": "7f973bbeea5816d49960d40ea15ea7f7b5ed2b6d",
-        "size": 15258,
+        "sha": "e706734bb2f4f7528dd71b7c15d8ea3659f5bb0f",
+        "size": 25140,
         "type": "file",
-        "downloadUrl": "https://raw.githubusercontent.com/bmad-code-org/BMAD-METHOD/abe4eb1bce919c9d22cd18b3519353d5824c4b75/skills/bmad/scripts/render_skill.py"
+        "downloadUrl": "https://raw.githubusercontent.com/bmad-code-org/BMAD-METHOD/94b6727b00c8316557828c8a8ff2a48ff60d60cc/skills/bmad/scripts/render_skill.py"
       },
       {
         "name": "resolve_config.py",
@@ -275,7 +275,7 @@
         "sha": "fa52b9b469f753462372834c898561faa820e092",
         "size": 2168,
         "type": "file",
-        "downloadUrl": "https://raw.githubusercontent.com/bmad-code-org/BMAD-METHOD/abe4eb1bce919c9d22cd18b3519353d5824c4b75/skills/bmad/scripts/resolve_config.py"
+        "downloadUrl": "https://raw.githubusercontent.com/bmad-code-org/BMAD-METHOD/94b6727b00c8316557828c8a8ff2a48ff60d60cc/skills/bmad/scripts/resolve_config.py"
       },
       {
         "name": "resolve_customization.py",
@@ -283,7 +283,7 @@
         "sha": "96fc682dd9d7c55e4ba7c2afd237833d87edf7fb",
         "size": 5180,
         "type": "file",
-        "downloadUrl": "https://raw.githubusercontent.com/bmad-code-org/BMAD-METHOD/abe4eb1bce919c9d22cd18b3519353d5824c4b75/skills/bmad/scripts/resolve_customization.py"
+        "downloadUrl": "https://raw.githubusercontent.com/bmad-code-org/BMAD-METHOD/94b6727b00c8316557828c8a8ff2a48ff60d60cc/skills/bmad/scripts/resolve_customization.py"
       },
       {
         "name": "setup.py",
@@ -291,12 +291,12 @@
         "sha": "033379c7e8a87308a2bd49fdda92d03853cb781b",
         "size": 50996,
         "type": "file",
-        "downloadUrl": "https://raw.githubusercontent.com/bmad-code-org/BMAD-METHOD/abe4eb1bce919c9d22cd18b3519353d5824c4b75/skills/bmad/scripts/setup.py"
+        "downloadUrl": "https://raw.githubusercontent.com/bmad-code-org/BMAD-METHOD/94b6727b00c8316557828c8a8ff2a48ff60d60cc/skills/bmad/scripts/setup.py"
       },
       {
         "name": "tests",
         "path": "skills/bmad/scripts/tests",
-        "sha": "183b5199120924abf5ef2b5a7bb90723f0314f31",
+        "sha": "72b9a13a277e48485ffd807179eb366202851569",
         "size": 0,
         "type": "dir",
         "downloadUrl": null
