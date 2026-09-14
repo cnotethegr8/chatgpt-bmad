@@ -11,11 +11,14 @@ const headers = {
   'User-Agent': 'chatgpt-bmad-sync',
   'X-GitHub-Api-Version': '2022-11-28',
 };
+if (process.env.GITHUB_TOKEN) headers.Authorization = `Bearer ${process.env.GITHUB_TOKEN}`;
 
 async function github(path) {
   const response = await fetch(`${API}${path}`, { headers });
   if (!response.ok) {
-    const error = new Error(`GitHub ${response.status}: ${path}`);
+    const detail = (await response.text().catch(() => '')).trim();
+    const suffix = detail ? `: ${detail.slice(0, 1000)}` : '';
+    const error = new Error(`GitHub ${response.status}: ${path}${suffix}`);
     error.status = response.status;
     throw error;
   }

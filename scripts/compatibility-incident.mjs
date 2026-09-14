@@ -53,7 +53,11 @@ export function extractAffectedTarget(log = '') {
 }
 
 export function classifyFailure(stage, log = '') {
-  if ((stage === 'upstream_clone' || stage === 'upstream_sync') && isTransientInfrastructureFailure(log)) {
+  const upstreamStage = stage === 'upstream_clone' || stage === 'upstream_sync';
+  if (upstreamStage && /github (?:401|403)\b/i.test(log)) {
+    return { category: 'infrastructure_github_api', compatibility: false, affectedTarget: null };
+  }
+  if (upstreamStage && isTransientInfrastructureFailure(log)) {
     return { category: 'infrastructure_transient', compatibility: false, affectedTarget: null };
   }
   if (stage === 'integration') {
