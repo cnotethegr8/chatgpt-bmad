@@ -11,7 +11,8 @@
     "regenerate": "npm run test:regenerate && node scripts/regenerate.mjs",
     "test:regenerate": "node --test scripts/regenerate.test.mjs",
     "test:compat": "node --test scripts/compatibility-incident.test.mjs",
-    "test:layout": "node --test scripts/upstream-layout.test.mjs"
+    "test:layout": "node --test scripts/upstream-layout.test.mjs",
+    "test:sync": "node --test scripts/sync-bmad.test.mjs"
   },
   "engines": {
     "node": ">=20"

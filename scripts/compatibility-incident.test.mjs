@@ -6,6 +6,10 @@ test('classifies transient clone failures as non-compatibility infrastructure', 
   assert.deepEqual(classifyFailure('upstream_clone', 'fatal: Could not resolve host: github.com'), { category: 'infrastructure_transient', compatibility: false, affectedTarget: null });
 });
 
+test('classifies GitHub API authorization failures during sync as infrastructure', () => {
+  assert.deepEqual(classifyFailure('upstream_sync', 'Error: GitHub 403: /commits/main: {"message":"Resource not accessible by integration"}'), { category: 'infrastructure_github_api', compatibility: false, affectedTarget: null });
+});
+
 test('classifies runtime bootstrap and extracts affected skill', () => {
   assert.deepEqual(classifyFailure('integration', 'bootstrap bmad-prd failed (exit 1)'), { category: 'runtime_bootstrap', compatibility: true, affectedTarget: 'bmad-prd' });
 });
