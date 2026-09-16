@@ -110,6 +110,24 @@ def _leaf_paths(table: dict[str, Any], prefix: str = "") -> set[str]:
     return leaves
 
 
+def _declares(defaults: dict[str, Any], path: str) -> bool:
+    node: Any = defaults
+    for part in path.split("."):
+        if not isinstance(node, dict) or part not in node:
+            return False
+        node = node[part]
+    return True
+
+
+def _check_persistent_layers(project_root: Path, skill_dir: Path, defaults: dict[str, Any] | None) -> None:
+    """A persistent override may only set keys the skill declares; a stale or misspelled key halts."""
+    custom_dir = project_root / "_bmad" / "custom"
+    for layer in (custom_dir / f"{skill_dir.name}.toml", custom_dir / f"{skill_dir.name}.user.toml"):
+        undeclared = sorted(path for path in _leaf_paths(load_toml(layer)) if not _declares(defaults or {}, path))
+        if undeclared:
+            raise RenderError(f"{layer} sets keys {skill_dir.name} does not declare: {', '.join(undeclared)}")
+
+
 def _lookup(data: dict[str, Any], dotted_path: str, label: str) -> Any:
     current: Any = data
     for part in dotted_path.split("."):
@@ -400,7 +418,13 @@ class _RenderContext:
                 self,
             ),
             "rendered": self._rendered,
+            "halt": self._halt,
         }
+
+    @staticmethod
+    def _halt(message: Any) -> str:
+        """Let a template reject its inputs; the caller prefixes the source and line."""
+        raise RenderError(str(message))
 
     @jinja2.pass_context
     def _rendered(self, context: jinja2.runtime.Context, target: Any) -> str:
@@ -526,6 +550,7 @@ def render(
     central = load_central_config(project_root)
     has_customization = bool(overrides is not None or assignments) or (skill_dir / "customize.toml").is_file()
     defaults = load_toml(skill_dir / "customize.toml", required=True) if has_customization else None
+    _check_persistent_layers(project_root, skill_dir, defaults)
     customization = load_customization(project_root, skill_dir) if has_customization else {}
     supplied: set[str] = set()
     if defaults is not None:

@@ -310,6 +310,36 @@ class RenderSkillTests(unittest.TestCase):
                 with self.assertRaisesRegex(rs.RenderError, "conflicts with earlier --set"):
                     rs.render(ws.project, skill, assignments=assignments)
 
+    def test_undeclared_persistent_key_halts_and_unread_declared_key_renders(self):
+        ws = self._workspace()
+        skill = self._fixture_skill(ws, '[workflow]\nmessage = "base"\nunread = "base"\n', "{{ workflow.message }}")
+        team = ws.bmad / "custom" / f"{skill.name}.toml"
+        user = ws.bmad / "custom" / f"{skill.name}.user.toml"
+        # A declared key this render never reads is still a valid persistent override.
+        user.write_text('[workflow]\nunread = "changed"\n', encoding="utf-8")
+        self.assertEqual(rs.render(ws.project, skill).read_text(), "base")
+        generations = set((ws.bmad / "render" / skill.name).rglob("manifest.json"))
+        for layer, content, expected in (
+            (
+                user,
+                '[workflow]\nmessage = "ok"\nmesage = "typo"\n',
+                r"user\.toml sets keys fixture does not declare: workflow\.mesage$",
+            ),
+            (
+                team,
+                '[[workflow.review_layers]]\nid = "stale"\nname = "Stale"\ninstruction = "x"\n',
+                r"workflow\.review_layers$",
+            ),
+            (team, "[workflow.message]\nnested = true\n", r"workflow\.message\.nested$"),
+            (team, 'message = "top level"\n', r"does not declare: message$"),
+        ):
+            with self.subTest(layer=layer.name, content=content):
+                layer.write_text(content, encoding="utf-8")
+                with self.assertRaisesRegex(rs.RenderError, expected):
+                    rs.render(ws.project, skill)
+                self.assertEqual(set((ws.bmad / "render" / skill.name).rglob("manifest.json")), generations)
+                layer.unlink()
+
     def test_invalid_invocation_halts_before_publication(self):
         invalid = (
             ("--set", "workflow.message"),
@@ -451,6 +481,7 @@ class RenderSkillTests(unittest.TestCase):
             "{% for item in workflow.count %}{{ item }}{% endfor %}\n",
             '{{ rendered("missing.md") }}\n',
             "{{ rendered(workflow.items) }}\n",
+            '{{ halt("rejected") }}\n',
         )
         for template in templates:
             with self.subTest(template=template):
@@ -470,6 +501,13 @@ class RenderSkillTests(unittest.TestCase):
             rs.RenderError, r"^detail\.md:1: missing customization parameter `workflow\.missing`$"
         ):
             rs.render(ws.project, skill)
+        guard = '{% if workflow.value not in ("two", "three") %}{{ halt("value must be two or three, not " ~ workflow.value) }}{% endif %}\n'
+        (skill / "detail.md").write_text(guard + "kept\n", encoding="utf-8")
+        with self.assertRaisesRegex(rs.RenderError, r"^detail\.md:1: value must be two or three, not one$"):
+            rs.render(ws.project, skill)
+        self.assertEqual(
+            _files(rs.render(ws.project, skill, assignments=["workflow.value=two"]).parent)["detail.md"], b"kept\n"
+        )
 
     def test_excluded_entry_and_surviving_reference_to_excluded_file_halt(self):
         for workflow in (
@@ -654,7 +692,7 @@ class RenderSkillTests(unittest.TestCase):
         ws = self._workspace()
         skill = self._skill(ws, "bmad-build")
         (ws.bmad / "custom" / f"{skill.name}.toml").write_text(
-            '[[workflow.review_layers]]\nid = 42\nname = "bad"\ninstruction = "bad"\n',
+            '[[workflow.thorough_lenses]]\nid = 42\nname = "bad"\ninstruction = "bad"\n',
             encoding="utf-8",
         )
         result = self._cli(ws.project, skill)
@@ -679,7 +717,7 @@ class RenderSkillTests(unittest.TestCase):
         (ws.bmad / "custom" / f"{skill.name}.toml").write_text(
             "\n".join(
                 [
-                    "[[workflow.review_layers]]",
+                    "[[workflow.thorough_lenses]]",
                     'id = "blind-hunter"',
                     'name = "Replacement"',
                     'instruction = "Run replacement review."',
@@ -696,8 +734,8 @@ class RenderSkillTests(unittest.TestCase):
 
         defaults = tomllib.loads((skill / "customize.toml").read_text(encoding="utf-8"))
         disabled = "\n".join(
-            f'[[workflow.review_layers]]\nid = "{layer["id"]}"\nname = "disabled"\ninstruction = ""\n'
-            for layer in defaults["workflow"]["review_layers"]
+            f'[[workflow.thorough_lenses]]\nid = "{layer["id"]}"\nname = "disabled"\ninstruction = ""\n'
+            for layer in defaults["workflow"]["thorough_lenses"]
         )
         (ws.bmad / "custom" / f"{skill.name}.toml").write_text(disabled, encoding="utf-8")
         review = (rs.render(ws.project, skill).parent / "step-04-review.md").read_text(encoding="utf-8")
