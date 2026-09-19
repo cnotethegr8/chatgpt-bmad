@@ -33,6 +33,11 @@ Shaping and planning:
 - `bmad-sprint-planning` — checks the planning is complete enough to
   implement and generates the sprint status file; its status action
   summarizes sprint state at any time.
+- `bmad-preview-ticketing` — preview of the ticket tree: slices an
+  initiative into epics, incepts an epic into a breakdown of stories,
+  spikes, and bugs, refines tickets when pulled, and runs the board on a git-backed
+  store or a tracker. An alternative to `bmad-create-epics-and-stories`
+  plus `bmad-sprint-planning`, not a companion to them.
 - `bmad-project-context` — sets up or refreshes the repo's agent
   instructions; useful any time, in any path.
 
@@ -45,7 +50,7 @@ Implementation and quality:
   loop dispatches. Do not choose it for attended work.
 - `bmad-code-review` — optional extra review of any change, on top of
   Build's built-in review.
-- `bmad-walkthrough` — guided human walkthrough of a change.
+- `bmad-walkthrough` — guided human review of a commit, PR, file, or directory.
 - `bmad-qa-generate-e2e-tests` — generates API and end-to-end tests for
   implemented code.
 - `bmad-retrospective` — judges a completed epic as a whole against its spec.

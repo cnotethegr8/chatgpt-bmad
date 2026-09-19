@@ -1,12 +1,12 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-09-18T09:01:48.483Z",
+  "generatedAt": "2026-09-19T08:49:34.881Z",
   "upstream": {
     "repository": "bmad-code-org/BMAD-METHOD",
     "branch": "main",
-    "sha": "0a00053409731db811f2595ceb521dff9dde9a19",
-    "committedAt": "2026-09-15T21:56:46Z",
-    "message": "fix(docs-site): remediate Astro AVIF advisory (#2876)"
+    "sha": "f033e70a2c0a3751aaab17dfdd29839ac621f541",
+    "committedAt": "2026-09-18T06:51:57Z",
+    "message": "feat(method): add bmad-preview-ticketing skill and tickets.py runtime (#2884)\n\n* feat(method): add bmad-preview-ticketing skill and tickets.py runtime\n\nTicketing at every altitude: an initiative sliced into epics, an epic\nincepted into a Breakdown of stories, spikes, and bugs, and tickets\nwritten, refined, published, and moved on a git-backed store or a tracker\n(GitHub, Jira, Linear, Notion, Trello).\n\n- Container tickets are the spec at their altitude: Requirements with\n  stable ids, Outcome, Done when, Boundaries, Breakdown.\n- Thin tickets carry contribution and verification; full criteria are\n  written when pulled (`refined: false` until approved).\n- scripts/tickets.py derives ready, blocked, and to-create views from the\n  files; scripts/read_toml.py reads the store config; tests beside them.\n- Store configs per tracker under config/, templates per type under\n  assets/, customization surface in customize.toml.\n- Listed in the bmad help catalog as a preview alternative to\n  bmad-create-epics-and-stories plus bmad-sprint-planning.\n\n* fix(method): address review findings in bmad-preview-ticketing\n\n- tickets.py: a dropped blocker still blocks its dependents; mark clears\n  blocked_at and blocked_reason on a status change and takes the assignee\n  literally; --project-root finds the store config when tickets live\n  outside the project; a numeric blocker falls back to the ticket id;\n  duplicate Breakdown numbers and blockers naming no entry are errors.\n- read_toml.py: read local files only.\n- board.md: mark is the leaf-level write, a container's status is a file\n  edit, and a dropped ticket is removed or repointed in its dependents.\n- SKILL.md: tickets are drafted under tickets.root; persistent facts load\n  file: entries.\n- gh config: read children with `gh issue view --json subIssues`.\n- help catalog: the breakdown includes bugs.\n\n* docs: add a guide to testing v7 previews\n\nA new page under Plan Larger Work for trying proposed v7 planning\nchanges: setting up an initiative store, configuring where tickets are\ntracked, and using bmad-preview-ticketing. It states early that preview\nstories are not wired into sprint planning, sprint-status.yaml, or\nstatus updates from bmad-build, and that a story must be refined before\nit is built.\n\n- Sidebar entry and a pointer from the stories-and-tracking page.\n- Locale coverage baseline records the new English-only page."
   },
   "roots": {
     "layout": "flat",
@@ -156,6 +156,14 @@
         "downloadUrl": null
       },
       {
+        "name": "bmad-preview-ticketing",
+        "path": "skills/bmad-preview-ticketing",
+        "sha": "0ab22bf388b6acd2724e5551da494c96ac543195",
+        "size": 0,
+        "type": "dir",
+        "downloadUrl": null
+      },
+      {
         "name": "bmad-prfaq",
         "path": "skills/bmad-prfaq",
         "sha": "aff50538fedcb59e331bed114ae4598b2352a93b",
@@ -230,7 +238,7 @@
       {
         "name": "bmad-walkthrough",
         "path": "skills/bmad-walkthrough",
-        "sha": "24fc2cad93f1ffa5f91df1824bda9c99a8314270",
+        "sha": "95328de2e7dcebc8d0aa38714cbaae940615ae63",
         "size": 0,
         "type": "dir",
         "downloadUrl": null
@@ -238,7 +246,7 @@
       {
         "name": "bmad",
         "path": "skills/bmad",
-        "sha": "731bd5aadf2a13a72dc40b3ccc5ea8cce11df5b3",
+        "sha": "aea716c71826dab2872aeae2a51ad4f8dbac2bfd",
         "size": 0,
         "type": "dir",
         "downloadUrl": null
@@ -251,7 +259,7 @@
         "sha": "55cefc220face9c85c452c9883b0fca7f9accb5e",
         "size": 4096,
         "type": "file",
-        "downloadUrl": "https://raw.githubusercontent.com/bmad-code-org/BMAD-METHOD/0a00053409731db811f2595ceb521dff9dde9a19/skills/bmad/scripts/config_utils.py"
+        "downloadUrl": "https://raw.githubusercontent.com/bmad-code-org/BMAD-METHOD/f033e70a2c0a3751aaab17dfdd29839ac621f541/skills/bmad/scripts/config_utils.py"
       },
       {
         "name": "memlog.py",
@@ -259,7 +267,7 @@
         "sha": "736b788e90bd80f74932c5bbc2152f0d0031529b",
         "size": 9258,
         "type": "file",
-        "downloadUrl": "https://raw.githubusercontent.com/bmad-code-org/BMAD-METHOD/0a00053409731db811f2595ceb521dff9dde9a19/skills/bmad/scripts/memlog.py"
+        "downloadUrl": "https://raw.githubusercontent.com/bmad-code-org/BMAD-METHOD/f033e70a2c0a3751aaab17dfdd29839ac621f541/skills/bmad/scripts/memlog.py"
       },
       {
         "name": "render_skill.py",
@@ -267,7 +275,7 @@
         "sha": "ad4ffd30c9f1983c7b1a77a613625efffeddbfdf",
         "size": 26281,
         "type": "file",
-        "downloadUrl": "https://raw.githubusercontent.com/bmad-code-org/BMAD-METHOD/0a00053409731db811f2595ceb521dff9dde9a19/skills/bmad/scripts/render_skill.py"
+        "downloadUrl": "https://raw.githubusercontent.com/bmad-code-org/BMAD-METHOD/f033e70a2c0a3751aaab17dfdd29839ac621f541/skills/bmad/scripts/render_skill.py"
       },
       {
         "name": "resolve_config.py",
@@ -275,7 +283,7 @@
         "sha": "fa52b9b469f753462372834c898561faa820e092",
         "size": 2168,
         "type": "file",
-        "downloadUrl": "https://raw.githubusercontent.com/bmad-code-org/BMAD-METHOD/0a00053409731db811f2595ceb521dff9dde9a19/skills/bmad/scripts/resolve_config.py"
+        "downloadUrl": "https://raw.githubusercontent.com/bmad-code-org/BMAD-METHOD/f033e70a2c0a3751aaab17dfdd29839ac621f541/skills/bmad/scripts/resolve_config.py"
       },
       {
         "name": "resolve_customization.py",
@@ -283,7 +291,7 @@
         "sha": "96fc682dd9d7c55e4ba7c2afd237833d87edf7fb",
         "size": 5180,
         "type": "file",
-        "downloadUrl": "https://raw.githubusercontent.com/bmad-code-org/BMAD-METHOD/0a00053409731db811f2595ceb521dff9dde9a19/skills/bmad/scripts/resolve_customization.py"
+        "downloadUrl": "https://raw.githubusercontent.com/bmad-code-org/BMAD-METHOD/f033e70a2c0a3751aaab17dfdd29839ac621f541/skills/bmad/scripts/resolve_customization.py"
       },
       {
         "name": "setup.py",
@@ -291,7 +299,7 @@
         "sha": "033379c7e8a87308a2bd49fdda92d03853cb781b",
         "size": 50996,
         "type": "file",
-        "downloadUrl": "https://raw.githubusercontent.com/bmad-code-org/BMAD-METHOD/0a00053409731db811f2595ceb521dff9dde9a19/skills/bmad/scripts/setup.py"
+        "downloadUrl": "https://raw.githubusercontent.com/bmad-code-org/BMAD-METHOD/f033e70a2c0a3751aaab17dfdd29839ac621f541/skills/bmad/scripts/setup.py"
       },
       {
         "name": "tests",
