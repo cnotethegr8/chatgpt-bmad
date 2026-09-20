@@ -11,6 +11,16 @@ const upstreamPlugin = upstreamLayout.plugin ?? {
   author: 'BMAD Method',
 };
 
+function normalizeAuthor(author) {
+  if (author && typeof author === 'object' && !Array.isArray(author)) {
+    return author;
+  }
+
+  return {
+    name: typeof author === 'string' && author.trim() ? author : 'BMAD Method',
+  };
+}
+
 // Remove both the current canonical output and the old compatibility layout.
 await rm(pluginRoot, { recursive: true, force: true });
 await rm('plugin', { recursive: true, force: true });
@@ -56,7 +66,7 @@ const pluginManifest = {
   name: 'bmad-method',
   version: upstreamLayout.version,
   description: upstreamPlugin.description ?? 'BMAD Method',
-  author: upstreamPlugin.author ?? 'BMAD Method',
+  author: normalizeAuthor(upstreamPlugin.author),
   homepage: 'https://github.com/bmad-code-org/BMAD-METHOD',
   repository: 'https://github.com/cnotethegr8/chatgpt-bmad',
   license: 'MIT',
