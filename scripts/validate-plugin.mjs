@@ -14,6 +14,12 @@ if (manifest.name !== pluginEntry.name) {
   throw new Error(`Marketplace entry ${pluginEntry.name} does not match plugin manifest name ${manifest.name}`);
 }
 if (manifest.skills !== './skills/') throw new Error(`Unexpected plugin skills path: ${manifest.skills}`);
+if (!manifest.author || typeof manifest.author !== 'object' || Array.isArray(manifest.author)) {
+  throw new Error('Plugin author must be an object');
+}
+if (typeof manifest.author.name !== 'string' || !manifest.author.name.trim()) {
+  throw new Error('Plugin author.name must be a non-empty string');
+}
 
 const upstream = JSON.parse(await readFile(path.join(pluginRoot, 'UPSTREAM.json'), 'utf8'));
 const skillsRoot = path.join(pluginRoot, 'skills');
