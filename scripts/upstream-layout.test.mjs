@@ -31,9 +31,10 @@ test('discovers legacy marketplace layout', async () => {
   assert.equal(layout.runtimeScriptsPath, path.join(root, 'src/scripts'));
 });
 
-test('discovers flat skills layout introduced by upstream BMAD', async () => {
+test('discovers current flat skills layout from bmod module metadata', async () => {
   const root = await tempRoot();
-  await write(root, 'skills/bmad/module-manifest.toml', 'version = "7.0.0"\n');
+  await write(root, 'skills/bmad/bmod.toml', '[skill]\nbmod = "bmod-core-tools"\n');
+  await write(root, 'skills/bmod-core-tools/bmod.toml', '[bmod]\ncode = "core-tools"\nversion = "6.13.0-next"\n');
   await write(root, 'skills/bmad/SKILL.md', '---\nname: bmad\n---\n');
   await write(root, 'skills/bmad/scripts/runtime.py', 'print("ok")\n');
   await write(root, 'skills/bmad-prd/SKILL.md', '---\nname: bmad-prd\n---\n');
@@ -41,9 +42,20 @@ test('discovers flat skills layout introduced by upstream BMAD', async () => {
 
   const layout = await discoverUpstreamLayout(root);
   assert.equal(layout.kind, 'flat');
-  assert.equal(layout.version, '7.0.0');
+  assert.equal(layout.version, '6.13.0-next');
   assert.deepEqual(layout.skillPaths, ['./skills/bmad', './skills/bmad-prd']);
   assert.equal(layout.runtimeScriptsPath, path.join(root, 'skills/bmad/scripts'));
+});
+
+test('supports previous flat module-manifest version metadata', async () => {
+  const root = await tempRoot();
+  await write(root, 'skills/bmad/module-manifest.toml', 'version = "7.0.0"\n');
+  await write(root, 'skills/bmad/SKILL.md', '---\nname: bmad\n---\n');
+  await write(root, 'skills/bmad/scripts/runtime.py', 'print("ok")\n');
+
+  const layout = await discoverUpstreamLayout(root);
+  assert.equal(layout.kind, 'flat');
+  assert.equal(layout.version, '7.0.0');
 });
 
 test('remote discovery falls back from flat skills to legacy src layout', async () => {
