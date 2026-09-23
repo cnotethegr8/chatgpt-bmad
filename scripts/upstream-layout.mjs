@@ -11,11 +11,32 @@ async function exists(target) {
   }
 }
 
-async function readFlatVersion(root) {
-  const manifest = await readFile(path.join(root, 'skills', 'bmad', 'module-manifest.toml'), 'utf8');
+function parseVersion(manifest, label) {
   const match = manifest.match(/^version\s*=\s*["']([^"']+)["']\s*$/m);
-  if (!match) throw new Error('Flat BMAD module manifest has no version');
+  if (!match) throw new Error(`${label} has no version`);
   return match[1];
+}
+
+async function readFlatVersion(root) {
+  const skillsRoot = path.join(root, 'skills');
+  const bmadRecordPath = path.join(skillsRoot, 'bmad', 'bmod.toml');
+  if (await exists(bmadRecordPath)) {
+    const bmadRecord = await readFile(bmadRecordPath, 'utf8');
+    const moduleMatch = bmadRecord.match(/^bmod\s*=\s*["']([^"']+)["']\s*$/m);
+    if (moduleMatch) {
+      const moduleRecordPath = path.join(skillsRoot, moduleMatch[1], 'bmod.toml');
+      if (await exists(moduleRecordPath)) {
+        return parseVersion(await readFile(moduleRecordPath, 'utf8'), `Flat BMAD module record ${moduleMatch[1]}`);
+      }
+    }
+  }
+
+  const legacyManifestPath = path.join(skillsRoot, 'bmad', 'module-manifest.toml');
+  if (await exists(legacyManifestPath)) {
+    return parseVersion(await readFile(legacyManifestPath, 'utf8'), 'Flat BMAD module manifest');
+  }
+
+  throw new Error('Flat BMAD layout has no readable version metadata');
 }
 
 export async function discoverUpstreamLayout(root) {
