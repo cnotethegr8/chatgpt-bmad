@@ -150,8 +150,23 @@ def main() -> int:
             if value is not _MISSING:
                 output[key] = value
     write_json_stdout(output)
+    report_owed_setup(skill_dir, project_root)
     return 0
 
 
+def report_owed_setup(skill_dir: Path, project_root: Path | None) -> None:
+    # The resolver is the first thing every skill runs, so it is where a skill
+    # learns that setup owes it something. It must never fail the resolve.
+    try:
+        import setup_check
+    except Exception:
+        return
+    setup_check.report(skill_dir, project_root)
+
+
 if __name__ == "__main__":
+    if sys.platform == "win32":
+        # Piped output on Windows defaults to a legacy code page, not UTF-8.
+        sys.stdout.reconfigure(encoding="utf-8")
+        sys.stderr.reconfigure(encoding="utf-8")
     raise SystemExit(main())

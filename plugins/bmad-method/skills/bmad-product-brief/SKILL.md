@@ -26,7 +26,9 @@ At the opening greeting, let the user know they can invoke `bmad-party-mode` for
 
 ## On Activation
 
-1. Resolve customization: `uv run {project-root}/_bmad/scripts/resolve_customization.py --skill {skill-root} --project-root {project-root} --key workflow`. On failure, read `{skill-root}/customize.toml` directly and use defaults.
+1. Resolve customization: `uv run {project-root}/_bmad/scripts/resolve_customization.py --skill {skill-root} --project-root {project-root} --key workflow`.
+   - Script not found: BMad is not set up here. Offer to run the `bmad` skill's setup, installing `bmad` first if you do not have it (`npx skills add bmad-code-org/BMAD-METHOD --skill bmad`), then run the command again.
+   - Any other failure: read `{skill-root}/customize.toml` directly and use defaults.
 2. Execute each entry in `{workflow.activation_steps_prepend}` in order.
 3. Treat every entry in `{workflow.persistent_facts}` as foundational context for the rest of the run. Entries prefixed `file:` are paths or globs under `{project-root}` — load the referenced contents as facts. All other entries are facts verbatim.
 4. `{workflow.external_sources}` is an org-configured registry of internal tools (knowledge bases, MCP tools); consult them alongside generic web research on the same triggers in `## Discovery`, org tools preferred when their directive matches. If a named tool is unavailable at runtime, fall back to standard behavior and note the gap when relevant.
@@ -98,5 +100,5 @@ The workspace persists; stop and resume freely. The opener's philosophy (not in 
 1. Memlog audit + addendum review: the user ends this step with an explicit, shared accounting of how the meaningful contents of `.memlog.md` were handled — captured in the brief, captured in `addendum.md` (which may already hold detail captured during the conversation — see `## Constraints` for what belongs there), or set aside as process noise.
 2. Polish: apply each entry in `{workflow.doc_standards}` (a `skill:`, `file:`, or plain-text directive) to `brief.md` (and `addendum.md` if it exists). Run passes as parallel subagents - apply all doc standards to `brief.md` first, then `addendum.md` so we present a high-quality draft for the user to review and finalize.
 3. External handoffs: execute each entry in `{workflow.external_handoffs}` to route artifacts beyond local files (Confluence, Notion, ticket systems, etc.) — each directive names the MCP tool and the fields it needs. Invoke the tool, capture any URLs or IDs returned, and surface them in the user message. If a named tool is unavailable, skip that handoff and flag it; local files always exist regardless.
-4. Tell the user it is ready: local paths and external destinations (URLs returned from handoffs). Invoke `bmad-help` to suggest what next steps make sense in the bmad method ecosystem.
+4. Tell the user it is ready: local paths and external destinations (URLs returned from handoffs). Invoke the `bmad` skill to suggest what next steps make sense in the bmad method ecosystem.
 5. Run `{workflow.on_complete}` if non-empty. Treat a string scalar as a single instruction and an array as a sequence of instructions executed in order.
