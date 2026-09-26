@@ -96,10 +96,15 @@ class PublishInternalsTests(unittest.TestCase):
             with self.assertRaisesRegex(rs.RenderError, "collision or corruption"):
                 rs._publish(dest, outputs, {**manifest, "extra": True})
 
-            (dest / "extra.md").write_text("stray\n", encoding="utf-8")
-            with self.assertRaisesRegex(rs.RenderError, "unexpected or missing"):
+            (dest / "Thumbs.db").write_bytes(b"stray")
+            rs._publish(dest, outputs, manifest)
+            self.assertEqual((dest / "Thumbs.db").read_bytes(), b"stray")
+
+            (dest / "workflow.md").unlink()
+            with self.assertRaisesRegex(
+                rs.RenderError, rf"missing rendered files: workflow\.md in {re.escape(str(dest))}"
+            ):
                 rs._publish(dest, outputs, manifest)
-            (dest / "extra.md").unlink()
 
             (dest / "workflow.md").write_bytes(b"hello\ncorrupt")
             with self.assertRaisesRegex(rs.RenderError, "hash mismatch"):
@@ -194,8 +199,9 @@ class RenderSkillTests(unittest.TestCase):
         markdown = _markdown(snap)
         self.assertIsNone(COMPILE_TOKEN.search(markdown), markdown)
         self.assertNotIn("{skill-root}", markdown)
-        artifacts = (project.resolve() / "_bmad-output" / "implementation-artifacts").as_posix()
-        self.assertIn(artifacts, markdown)
+        if skill_name != "bmad-retrospective":
+            artifacts = (project.resolve() / "_bmad-output" / "implementation-artifacts").as_posix()
+            self.assertIn(artifacts, markdown)
         return snap
 
     def _fixture_skill(self, ws: SimpleNamespace, defaults: str, workflow: str, **sources: str) -> Path:
@@ -588,7 +594,7 @@ class RenderSkillTests(unittest.TestCase):
                 skill = self._skill(ws, name)
                 workflow = rs.render(ws.project, skill)
                 snap = self._assert_rendered(workflow, ws.project, name)
-                self.assertIn("{spec_file}", _markdown(snap))
+                self.assertIn("{plan_file}", _markdown(snap))
                 hunter = snap / "review-prompts" / "edge-case-hunter.md"
                 self.assertTrue(hunter.is_file())
                 self.assertIn(hunter.as_posix(), _markdown(snap))
@@ -601,21 +607,27 @@ class RenderSkillTests(unittest.TestCase):
                 workflow = rs.render(ws.project, skill)
                 self._assert_rendered(workflow, ws.project, name)
 
+    def test_build_skills_render_each_pinned_route(self):
+        for name in ("bmad-build", "bmad-build-auto"):
+            for route in ("oneshot", "full"):
+                with self.subTest(name=name, route=route):
+                    ws = self._workspace()
+                    skill = self._skill(ws, name)
+                    workflow = rs.render(ws.project, skill, assignments=[f"workflow.route={route}"])
+                    self._assert_rendered(workflow, ws.project, name)
+
     def test_skill_root_binds_bundled_scripts_to_the_installed_skill(self):
         ws = self._workspace()
         skill = self._skill(ws, "bmad-retrospective")
         snap = self._assert_rendered(rs.render(ws.project, skill), ws.project, "bmad-retrospective")
         markdown = _markdown(snap)
-        self.assertIn((skill / "scripts" / "sprint_status.py").as_posix(), markdown)
-        self.assertIn("epic: {{epic_number}}\n", markdown)
-        self.assertIn("epic-{{prev}}-retro-*.md", markdown)
         self.assertIn((skill / "scripts" / "git_evidence.py").as_posix(), markdown)
         manifest = json.loads((snap / "manifest.json").read_text(encoding="utf-8"))
         self.assertEqual(manifest["inputs"]["skill_root"], str(skill.resolve()))
         elsewhere = _copy_skill(ws.outer / "elsewhere" / "bmad-retrospective", "bmad-retrospective")
         other = rs.render(ws.project, elsewhere)
         self.assertNotEqual(other.parent, snap)
-        self.assertIn((elsewhere / "scripts" / "sprint_status.py").as_posix(), _markdown(other.parent))
+        self.assertIn((elsewhere / "scripts" / "git_evidence.py").as_posix(), _markdown(other.parent))
 
     def test_cli_from_nested_cwd_dispatches_one_absolute_workflow(self):
         ws = self._workspace()
@@ -652,8 +664,8 @@ class RenderSkillTests(unittest.TestCase):
         self.assertIn("/impl-v2/", after_config.read_text(encoding="utf-8"))
         self.assertTrue(before.exists())
 
-        (skill / "compile-epic-context.md").write_text(
-            (skill / "compile-epic-context.md").read_text(encoding="utf-8") + "\n<!-- effective change -->\n",
+        (skill / "plan-template.md").write_text(
+            (skill / "plan-template.md").read_text(encoding="utf-8") + "\n<!-- effective change -->\n",
             encoding="utf-8",
         )
         after_source = rs.render(ws.project, skill)
@@ -769,17 +781,17 @@ class RenderSkillTests(unittest.TestCase):
         review = (rs.render(ws.project, skill).parent / "step-04-review.md").read_text(encoding="utf-8")
         self.assertIn("No active review layers. HALT", review)
 
-    def test_non_empty_open_spec_override_reaches_both_terminal_routes(self):
+    def test_non_empty_open_plan_override_reaches_both_terminal_routes(self):
         ws = self._workspace()
         skill = self._skill(ws, "bmad-build")
         (ws.bmad / "custom" / f"{skill.name}.user.toml").write_text(
-            '[workflow]\nopen_spec = "OPEN-SPEC-SENTINEL {project-root} {spec_file}"\n',
+            '[workflow]\nopen_plan = "OPEN-PLAN-SENTINEL {project-root} {plan_file}"\n',
             encoding="utf-8",
         )
         snap = rs.render(ws.project, skill).parent
         for name in ("step-05-present.md", "step-oneshot.md"):
             rendered = (snap / name).read_text(encoding="utf-8")
-            self.assertIn("OPEN-SPEC-SENTINEL {project-root} {spec_file}", rendered)
+            self.assertIn("OPEN-PLAN-SENTINEL {project-root} {plan_file}", rendered)
 
     def test_installed_renderer_identity_change_publishes_a_new_generation(self):
         ws = self._workspace()
@@ -864,6 +876,26 @@ class RenderSkillTests(unittest.TestCase):
         self.assertNotEqual(result.returncode, 0)
         self.assertIn("hash mismatch", result.stdout)
         self.assertTrue(workflow.read_text(encoding="utf-8").endswith("corrupt"))
+
+    def test_stray_file_in_generation_is_ignored_and_missing_output_is_named(self):
+        ws = self._workspace()
+        skill = self._skill(ws, "bmad-build")
+        workflow = rs.render(ws.project, skill)
+        stray = workflow.parent / "Thumbs.db"
+        stray.write_bytes(b"explorer")
+        result = self._cli(ws.project, skill)
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertEqual(result.stdout, f"{DISPATCH_PREFIX}{workflow}\n")
+        self.assertEqual(stray.read_bytes(), b"explorer")
+
+        workflow.unlink()
+        result = self._cli(ws.project, skill)
+        self.assertEqual(result.returncode, 1, result.stdout + result.stderr)
+        self.assertEqual(len(result.stdout.splitlines()), 1, result.stdout)
+        self.assertNotIn("Traceback", result.stdout + result.stderr)
+        self.assertIn(f"missing rendered files: workflow.md in {workflow.parent}", result.stdout)
+        self.assertIn("deleting that folder is safe", result.stdout)
+        self.assertFalse(workflow.exists())
 
     def test_skill_md_command_dispatches_for_every_rendered_skill(self):
         for name in RENDERED_SKILLS:

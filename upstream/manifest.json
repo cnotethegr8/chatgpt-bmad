@@ -1,12 +1,12 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-09-25T09:38:06.533Z",
+  "generatedAt": "2026-09-26T09:22:41.368Z",
   "upstream": {
     "repository": "bmad-code-org/BMAD-METHOD",
     "branch": "main",
-    "sha": "1b59caa7f96459fda6750c225a9330283e108fd6",
-    "committedAt": "2026-09-22T10:05:22Z",
-    "message": "feat(bmad): module migrations, with the method module's v6 to v7 migration (#2935)\n\n* feat(bmad): module migrations, with the method module's v6 to v7 migration\n\nA module ships a migration as a TOML file beside its bmod.toml with a\n[migration] table. knowledge.py lists them; bmad migrate finds the one\nwhose detect signals match, follows its guide, and verifies its checklist.\n\nbmod-method/v6-v7-migration.toml carries the rules for moving a v6\nproject's artifacts into the v7 initiative layout: planning documents,\nepics.md and sprint-status.yaml into a ticket tree, inbox for loose work,\nand the store's repository and workspace choices asked as questions.\n\n* fix(bmad): migration listing checks every required key; v6 to v7 rules agree with tickets.py\n\nReview fixes. A migration is listed only when its [migration] table names\nthe record's module and carries every key migrate.md requires. A bad file\nis a migration problem, not a document one, and roster.toml is skipped.\nThe v6 to v7 file: a backlog epic gets no status line, remnants go to\ninbox by default, the plan is written before the backup and moved into\nthe initiative, the archive of done epics' story files is the one\nremoval and happens after commit, and the workspace move of _bmad is\ncarved out of the never-touch rule.\n\n* fix(bmad): address review on the v6 to v7 migration\n\nChecklist exempts the migration's own two versioned folders. A whole-epic\ndependency is written to the dependent epic file's after as well as the\ninitiative breakdown, which is where tickets.py gates it. A backlog story\nthat still has a file maps to draft. The bare-plus-worktree conversion\nbuilds beside the checkout, on the project's own base branch, and removes\nthe old checkout only after the new layout is verified. Naming a module\nnarrows migrate's candidates instead of skipping detect. knowledge.py\nrejects whitespace-only fields. Help rows match the questions flow."
+    "sha": "5e33d3c03ba53187a40ab679d5479cdd4b6ac2fb",
+    "committedAt": "2026-09-25T14:17:11Z",
+    "message": "feat(ticketing): build from the ticket tree without ticket files (#2944)\n\n* docs(ticketing): shared rules for skills that use the ticket tree\n\nPlan file name and place, status carried by the plan and who writes each value, how skills find the tree and run tickets.py, the baseline revision, and where code review and the retrospective write.\n\n* docs(ticketing): backlog plans join by file stem, and a leaf file's status is read when there is no plan\n\n* feat(ticketing): entries start without a file and take their state from the plan\n\n* chore(tools): treat _bmad/method/scripts/ as install-only in the file reference check\n\n* feat(ticketing): tickets.py is installed for every skill and finds the active initiative\n\n* feat(ticketing): find and mark work on an entry that has only a plan\n\n* docs(ticketing): board rules say who moves a ticket\n\n* docs(ticketing): drop pull-to-start and the plan section\n\nAn entry is ready to start with no file, and the build's plan is its own file beside the leaf, so the ticketing skill stops describing a ## Plan section, a to_pull group, and publishing on pull. pull is only for refining, or for writing the file a tracker receives. On the repo store the committed tickets.toml is the publish; on a tracker publication is on_start or at_inception and the whole file is sent. spec_checkpoint becomes plan_checkpoint.\n\n* docs(ticketing): method help and docs describe the ticket tree without ticket files\n\n* refactor(ticketing): share tickets.py checks and test setup, and fix stale tree wording\n\n* test(ticketing): decode tickets.py output as UTF-8, and skip the undecodable-argument test on Windows\n\n* refactor(build): the build skills call their output a plan\n\nRename the build's output from spec to plan in bmad-build and bmad-build-auto with no change in behavior: plan-template.md, {plan_file}, [workflow] open_plan (no alias), bad_plan, Plan Change Log, plan-{slug}.md, source_plan, and the halt strings that name it. bmad-build records baseline_revision in place of baseline_commit. bmad-spec's spec_folder and SPEC.md keep their names. The renderer's open_plan label and the render tests follow, and a test renders both build skills with each pinned route.\n\n* feat(build): bmad-build builds the next ready entry from the ticket tree\n\nWith no argument, bmad-build takes the first ready entry from tickets.py next,\nreads it through find, and plans beside tickets.toml with the entry's ticket id.\nBuilds now stop at a new status, built, and never write done. tickets.py rows\ncarry a ref that find resolves, and a prerequisite in review counts as met.\n\n* feat(build): bmad-build takes a named ticket and offers started plans from the tree\n\n* refactor(build): bmad-build stops reading the old files\n\nDrop the stories.yaml route, story_key and the sprint-status sync, and the\nepic context compiled from the epics file. A tree ticket reads its epic file\nand References, and takes continuity from its prerequisites' plans.\n\n* feat(build): bmad-build-auto builds one ticket from the tree\n\nWith no work named, bmad-build-auto takes the active initiative's next\nready entry through tickets.py next and find; a named ref, ticket file,\nor title resolves through find. Its plan lands at find's path with\nticket and baseline_revision, continuity comes from the plans of the\nentry's prerequisites, and the run ends at built, never done. The\nepic-story path no longer halts on an earlier plan in review.\n\n* refactor(build): bmad-build-auto halts into the plan and stops reading the old files\n\nA halt on a tree ticket runs tickets.py mark, which records the blocked\nstatus and reason in the plan and creates it when there is none. Drop the\nstories.yaml folder+id dispatch and the epic context compiled from the\nepics file. bmad-build shows a blocked plan's reason and halts.\n\n* docs(build): the loop contract describes bmad-build-auto on the ticket tree\n\n* docs(build): the build docs and diagrams name the plan and take a ticket from the tree\n\n* refactor(build): sweep stale story wording from the build skills and drop the dead open_plan clause\n\n* fix(build): bmad-build-auto builds only what it is dispatched\n\nAn unattended worker must not choose its own work. Given no work it now\nhalts unclear intent instead of taking the first ready ticket from\ntickets.py next; the orchestrator names each ticket.\n\n* fix(build): bmad-build-auto takes a ticket only when the prompt names one\n\nA bare ref, path, or title matched by shape could be something other\nthan a ticket, and was sent to find. A ticket is now a reference the\nprompt calls a ticket, or a file whose frontmatter type is a ticket\ntype; find then resolves its plan, entry, and prerequisites.\n\n* refactor(build): bmad-build names a ticket, then resolves it with find\n\nSeparate what counts as a ticket from the find call that resolves its\nplan, entry, and prerequisites, as bmad-build-auto now does. No change\nin which prompts count as a ticket.\n\n* feat: review and retrospective from the ticket tree (#2954)\n\n* feat(code-review): find the ticket in review through the tree and write to its plan\n\nWith no argument and nothing in the conversation, bmad-code-review runs\ntickets.py status, offers the tickets in review, resolves the chosen one\nthrough find to its plan, diffs from the plan's baseline_revision with\nuntracked files, and takes the claims from the commits since it. Findings\ngo into a dated block under the plan's Code Review section, deferred\nfindings included. The sprint-status tier, story_key, and the status and\nsprint-status update are gone: the skill never changes a ticket's status.\n\n* refactor(code-review): call the review's input a plan and drop the story-file route\n\nRename {spec_file} to {plan_file} with no alias across the steps, the\ncustomize.toml lens and comment, and the render test. Findings go to the\nplan's Code Review section whenever a plan is set and to the chat\notherwise; the baseline_revision detection, the Tasks/Subtasks condition,\nand the Review Findings route are gone. The no-spec review mode becomes\nno-plan, and the rule in step-04 names built as the status the build\nleaves.\n\n* feat(retrospective): read an epic folder from the ticket tree and write its retrospective there\n\n* refactor(code-review): shorten the plan-file and ticket-tree tiers\n\n* refactor(retrospective): drop the sprint status route, its script, and its tests\n\n* refactor(correct-course): stop reading the epics file and writing sprint status\n\n* docs(review,retrospective): describe code review, retrospective, and correct-course on the ticket tree\n\n* refactor(review,retrospective): sweep duplicate rules and stale references from the epic\n\nSay the retrospective's file name, only-write rule, and unfinished-ticket\nverdict once each; describe git_evidence.py's output as the range's commits;\nfix cross-references that named a missing workflow.md, a Close phase, a\nDocument Project input, and a step where a section or item was meant; and\nalign the finish-an-epic doc and help row with the plan as the status record.\n\n* fix(retrospective): end the last plan's range at the epic's own work\n\nA retrospective run after later work has landed counted those commits as\nthe epic's, since the last range ran to HEAD. When later work has landed,\nthe range now ends at the last commit belonging to this epic's tickets,\nand the cut is recorded.\n\n* feat: retire the legacy planning route and migrate ticket state (#2955)\n\n* feat: retire the legacy planning route and migrate ticket state\n\n* docs: drop the ticket-tree upgrade guide and changelog entry\n\nRemove docs/start/upgrade-to-ticket-tree.md, its inbound links, and its\nlocale-coverage baseline entries. Revert the Unreleased CHANGELOG section.\n\n* docs: keep the translated workflow map diagram unchanged\n\nOnly the vi-vn, cs, and zh-cn workflow-map pages embed this diagram, and\ntheir text still describes the previous route.\n\n* fix(ticketing): move a leaf's plan with it, say epic tickets need no file, write test files as UTF-8\n\n---------\n\nCo-authored-by: Brian Madison <bmadcode@gmail.com>"
   },
   "roots": {
     "layout": "flat",
@@ -22,7 +22,7 @@
       {
         "name": "bmad-agent-analyst",
         "path": "skills/bmad-agent-analyst",
-        "sha": "9eb928c09d35053915581bfbaacc5888e6e66429",
+        "sha": "10445fe348a60580ae149baac08682086e50f3f5",
         "size": 0,
         "type": "dir",
         "downloadUrl": null
@@ -30,7 +30,7 @@
       {
         "name": "bmad-agent-architect",
         "path": "skills/bmad-agent-architect",
-        "sha": "8db707aa490209c8f13ec7d13fb8c4e70b01bba0",
+        "sha": "e4edef06be6881d8cb276ad6d7862862b1ae1af4",
         "size": 0,
         "type": "dir",
         "downloadUrl": null
@@ -38,7 +38,7 @@
       {
         "name": "bmad-agent-dev",
         "path": "skills/bmad-agent-dev",
-        "sha": "4274b6b662d6546dbc348a13e81a59a200cb282d",
+        "sha": "ede9305b7ea90b4daa240b7ecb38165ee6e0c0c8",
         "size": 0,
         "type": "dir",
         "downloadUrl": null
@@ -46,7 +46,7 @@
       {
         "name": "bmad-agent-pm",
         "path": "skills/bmad-agent-pm",
-        "sha": "fa5acf26e2d70878bfffe7e96d1158c882b637d2",
+        "sha": "13a911f361ff8a5c4c5af98f1163a997fa00a3b6",
         "size": 0,
         "type": "dir",
         "downloadUrl": null
@@ -54,7 +54,7 @@
       {
         "name": "bmad-agent-ux-designer",
         "path": "skills/bmad-agent-ux-designer",
-        "sha": "c8dd66f458b9b018e6f3c01d360f90f5041645fc",
+        "sha": "6f20d37b8e612a227997dfa065800e0a03dc9bca",
         "size": 0,
         "type": "dir",
         "downloadUrl": null
@@ -62,7 +62,7 @@
       {
         "name": "bmad-architecture",
         "path": "skills/bmad-architecture",
-        "sha": "f78ad52bc072626c0258a8914c8e473375ec666f",
+        "sha": "af2923fa43bab9e9cd4444ab16b55042c8e87a77",
         "size": 0,
         "type": "dir",
         "downloadUrl": null
@@ -78,7 +78,7 @@
       {
         "name": "bmad-build-auto",
         "path": "skills/bmad-build-auto",
-        "sha": "e9f4ae53065cc3754dc497157dbb06d1091ee135",
+        "sha": "4537ca9a447619656550ea5837fce3defcebfba2",
         "size": 0,
         "type": "dir",
         "downloadUrl": null
@@ -86,7 +86,7 @@
       {
         "name": "bmad-build",
         "path": "skills/bmad-build",
-        "sha": "095969ddddadd0567832779a8ae6fcdc9c401723",
+        "sha": "3ca511c99ccc8753aad6ec73659f04c48c595191",
         "size": 0,
         "type": "dir",
         "downloadUrl": null
@@ -94,7 +94,7 @@
       {
         "name": "bmad-code-review",
         "path": "skills/bmad-code-review",
-        "sha": "39d272737eb20737f4554306aa0e091e888bc75d",
+        "sha": "4d18fcbb57edbb177fe13999b6ee5c30dd777099",
         "size": 0,
         "type": "dir",
         "downloadUrl": null
@@ -102,15 +102,7 @@
       {
         "name": "bmad-correct-course",
         "path": "skills/bmad-correct-course",
-        "sha": "28b4bc67194d8c179ed73802301e9b47087d7a08",
-        "size": 0,
-        "type": "dir",
-        "downloadUrl": null
-      },
-      {
-        "name": "bmad-create-epics-and-stories",
-        "path": "skills/bmad-create-epics-and-stories",
-        "sha": "d0011da2827762f96e7564904aa450661fb46627",
+        "sha": "73f63584af82cb6cc03cfb7e8ec273f2cbea2998",
         "size": 0,
         "type": "dir",
         "downloadUrl": null
@@ -150,7 +142,7 @@
       {
         "name": "bmad-prd",
         "path": "skills/bmad-prd",
-        "sha": "a1fb70a79a92382d38e9664f75748af75804fbb7",
+        "sha": "9c07085288b06aeed5ae65ab03abe19081ec9087",
         "size": 0,
         "type": "dir",
         "downloadUrl": null
@@ -158,7 +150,7 @@
       {
         "name": "bmad-preview-ticketing",
         "path": "skills/bmad-preview-ticketing",
-        "sha": "9e9f70831aef98f5780a603d70d813303599a416",
+        "sha": "4a606261f35143b3862dd20c99352c01220a0ba3",
         "size": 0,
         "type": "dir",
         "downloadUrl": null
@@ -166,7 +158,7 @@
       {
         "name": "bmad-prfaq",
         "path": "skills/bmad-prfaq",
-        "sha": "1c2d99d794ad302385b88008bbb900e1563aee4e",
+        "sha": "eaeeed6d778a2c07e134ed12dca840bd1b623eb4",
         "size": 0,
         "type": "dir",
         "downloadUrl": null
@@ -190,7 +182,7 @@
       {
         "name": "bmad-qa-generate-e2e-tests",
         "path": "skills/bmad-qa-generate-e2e-tests",
-        "sha": "c5f1af6a7c02536b3ee070585fe30ea44424e4c3",
+        "sha": "9e8beced2b555accdb156c50c5a032c0ef25903b",
         "size": 0,
         "type": "dir",
         "downloadUrl": null
@@ -198,7 +190,7 @@
       {
         "name": "bmad-retrospective",
         "path": "skills/bmad-retrospective",
-        "sha": "d949ab69cd80f53b036f5b5984853389f595f8d5",
+        "sha": "6bad17a805cbc2ca1ed56d2eedc6165c6067980b",
         "size": 0,
         "type": "dir",
         "downloadUrl": null
@@ -206,7 +198,7 @@
       {
         "name": "bmad-review",
         "path": "skills/bmad-review",
-        "sha": "c2f8ef775e7763a6e724bfdf0b3963e42d1717f9",
+        "sha": "9dddf879cbbc518fbce84c7f3eafc6a69d4a68c4",
         "size": 0,
         "type": "dir",
         "downloadUrl": null
@@ -214,15 +206,7 @@
       {
         "name": "bmad-spec",
         "path": "skills/bmad-spec",
-        "sha": "63d85818088f971a5ea474c3f66e7ec085fffd7f",
-        "size": 0,
-        "type": "dir",
-        "downloadUrl": null
-      },
-      {
-        "name": "bmad-sprint-planning",
-        "path": "skills/bmad-sprint-planning",
-        "sha": "0d1159f006a22f7045724a6e563b2f3cd38f42f9",
+        "sha": "36b92c70e9d20bdbf44f617a9c52f7bbf0b5b6f1",
         "size": 0,
         "type": "dir",
         "downloadUrl": null
@@ -230,7 +214,7 @@
       {
         "name": "bmad-ux",
         "path": "skills/bmad-ux",
-        "sha": "16d69b9cd420650d70feb38daf4af03c666a9507",
+        "sha": "76e62b08ac5f9bc50065fe6e3313a75cd928ec17",
         "size": 0,
         "type": "dir",
         "downloadUrl": null
@@ -238,7 +222,7 @@
       {
         "name": "bmad-walkthrough",
         "path": "skills/bmad-walkthrough",
-        "sha": "218c2e503a27b4218fd18bb2f61d688605a8bddc",
+        "sha": "5ec62e53f1fb4858198b00873fe30984fe761906",
         "size": 0,
         "type": "dir",
         "downloadUrl": null
@@ -246,7 +230,7 @@
       {
         "name": "bmad",
         "path": "skills/bmad",
-        "sha": "5ec1a9638230b7f1477cfd0dc2b7ea4d2039591a",
+        "sha": "ac798c005052213a56155f73cc0c070b17d12e9e",
         "size": 0,
         "type": "dir",
         "downloadUrl": null
@@ -262,7 +246,7 @@
       {
         "name": "bmod-method",
         "path": "skills/bmod-method",
-        "sha": "510e8cebebbce5362904c810b61b3ab2c462dccc",
+        "sha": "cfd0a5888327a0050ac5daae60991fc1178007a1",
         "size": 0,
         "type": "dir",
         "downloadUrl": null
@@ -275,7 +259,7 @@
         "sha": "55cefc220face9c85c452c9883b0fca7f9accb5e",
         "size": 4096,
         "type": "file",
-        "downloadUrl": "https://raw.githubusercontent.com/bmad-code-org/BMAD-METHOD/1b59caa7f96459fda6750c225a9330283e108fd6/skills/bmad/scripts/config_utils.py"
+        "downloadUrl": "https://raw.githubusercontent.com/bmad-code-org/BMAD-METHOD/5e33d3c03ba53187a40ab679d5479cdd4b6ac2fb/skills/bmad/scripts/config_utils.py"
       },
       {
         "name": "knowledge.py",
@@ -283,7 +267,7 @@
         "sha": "7c708c021f422412f3773261b8060a2e9d21af86",
         "size": 17611,
         "type": "file",
-        "downloadUrl": "https://raw.githubusercontent.com/bmad-code-org/BMAD-METHOD/1b59caa7f96459fda6750c225a9330283e108fd6/skills/bmad/scripts/knowledge.py"
+        "downloadUrl": "https://raw.githubusercontent.com/bmad-code-org/BMAD-METHOD/5e33d3c03ba53187a40ab679d5479cdd4b6ac2fb/skills/bmad/scripts/knowledge.py"
       },
       {
         "name": "memlog.py",
@@ -291,15 +275,15 @@
         "sha": "18c9f69bf6ec169e7a221fc43fd8a4b0d0d67f90",
         "size": 9465,
         "type": "file",
-        "downloadUrl": "https://raw.githubusercontent.com/bmad-code-org/BMAD-METHOD/1b59caa7f96459fda6750c225a9330283e108fd6/skills/bmad/scripts/memlog.py"
+        "downloadUrl": "https://raw.githubusercontent.com/bmad-code-org/BMAD-METHOD/5e33d3c03ba53187a40ab679d5479cdd4b6ac2fb/skills/bmad/scripts/memlog.py"
       },
       {
         "name": "render_skill.py",
         "path": "skills/bmad/scripts/render_skill.py",
-        "sha": "a5dd328180b793dc2f30f088972931fdb3324d5b",
-        "size": 27197,
+        "sha": "e7e2f754deb1e8eeb0c43c84719f811f6d59ac68",
+        "size": 27335,
         "type": "file",
-        "downloadUrl": "https://raw.githubusercontent.com/bmad-code-org/BMAD-METHOD/1b59caa7f96459fda6750c225a9330283e108fd6/skills/bmad/scripts/render_skill.py"
+        "downloadUrl": "https://raw.githubusercontent.com/bmad-code-org/BMAD-METHOD/5e33d3c03ba53187a40ab679d5479cdd4b6ac2fb/skills/bmad/scripts/render_skill.py"
       },
       {
         "name": "resolve_config.py",
@@ -307,7 +291,7 @@
         "sha": "2af0e64a132e2d58b9ad50d301bb4f8a1838e619",
         "size": 2375,
         "type": "file",
-        "downloadUrl": "https://raw.githubusercontent.com/bmad-code-org/BMAD-METHOD/1b59caa7f96459fda6750c225a9330283e108fd6/skills/bmad/scripts/resolve_config.py"
+        "downloadUrl": "https://raw.githubusercontent.com/bmad-code-org/BMAD-METHOD/5e33d3c03ba53187a40ab679d5479cdd4b6ac2fb/skills/bmad/scripts/resolve_config.py"
       },
       {
         "name": "resolve_customization.py",
@@ -315,7 +299,7 @@
         "sha": "d99e7cfa44794c04817bfe74fe32a0bf37fa23e5",
         "size": 5786,
         "type": "file",
-        "downloadUrl": "https://raw.githubusercontent.com/bmad-code-org/BMAD-METHOD/1b59caa7f96459fda6750c225a9330283e108fd6/skills/bmad/scripts/resolve_customization.py"
+        "downloadUrl": "https://raw.githubusercontent.com/bmad-code-org/BMAD-METHOD/5e33d3c03ba53187a40ab679d5479cdd4b6ac2fb/skills/bmad/scripts/resolve_customization.py"
       },
       {
         "name": "roster.py",
@@ -323,7 +307,7 @@
         "sha": "4675a2c6d007996ceaae20beb8462125544672e8",
         "size": 9121,
         "type": "file",
-        "downloadUrl": "https://raw.githubusercontent.com/bmad-code-org/BMAD-METHOD/1b59caa7f96459fda6750c225a9330283e108fd6/skills/bmad/scripts/roster.py"
+        "downloadUrl": "https://raw.githubusercontent.com/bmad-code-org/BMAD-METHOD/5e33d3c03ba53187a40ab679d5479cdd4b6ac2fb/skills/bmad/scripts/roster.py"
       },
       {
         "name": "setup.py",
@@ -331,7 +315,7 @@
         "sha": "77ddca1437dc860f7c4c9d22e95343f68b7b172b",
         "size": 77230,
         "type": "file",
-        "downloadUrl": "https://raw.githubusercontent.com/bmad-code-org/BMAD-METHOD/1b59caa7f96459fda6750c225a9330283e108fd6/skills/bmad/scripts/setup.py"
+        "downloadUrl": "https://raw.githubusercontent.com/bmad-code-org/BMAD-METHOD/5e33d3c03ba53187a40ab679d5479cdd4b6ac2fb/skills/bmad/scripts/setup.py"
       },
       {
         "name": "setup_check.py",
@@ -339,12 +323,12 @@
         "sha": "b225e74acf523953becb03888448a20d35265964",
         "size": 5691,
         "type": "file",
-        "downloadUrl": "https://raw.githubusercontent.com/bmad-code-org/BMAD-METHOD/1b59caa7f96459fda6750c225a9330283e108fd6/skills/bmad/scripts/setup_check.py"
+        "downloadUrl": "https://raw.githubusercontent.com/bmad-code-org/BMAD-METHOD/5e33d3c03ba53187a40ab679d5479cdd4b6ac2fb/skills/bmad/scripts/setup_check.py"
       },
       {
         "name": "tests",
         "path": "skills/bmad/scripts/tests",
-        "sha": "8551e7b694ad3114325c9f7f49f7e9e461677c66",
+        "sha": "63469bb44f7871913f41e32e3204f339f26a1900",
         "size": 0,
         "type": "dir",
         "downloadUrl": null
