@@ -6,7 +6,7 @@
 # Every ticketing config has the same fields; only the prose and the maps differ. `description` sits
 # outside [tickets] so it is never loaded; it is for choosing a config.
 #
-# Tickets and artifacts live together as markdown files under root (layout in references/board.md,
+# Tickets and artifacts live together as markdown files under `output_folder` (layout in references/board.md,
 # Layout), committed in the monorepo or in a repo of their own. Status and assignee change by commit, and the skill never pushes,
 # so others see them only after a push and pull.
 #
@@ -18,10 +18,9 @@ description = "Quick setup, and the default when nothing else is chosen. Tickets
 
 [tickets]
 store = "repo"
-root = "{output_folder}"
 
 access = """
-Read and write the files under root. If root is missing, tell the user what is blocking and confirm the setup with them.
+Read and write the files under `output_folder`. If it is missing, tell the user what is blocking and confirm the setup with them.
 """
 
 fields = """
@@ -37,10 +36,11 @@ path from {project-root} or a url for a remote source, opened before it is cited
 # Verb prose lives in its own table so a skill can load one verb at a time.
 [verbs]
 setup = """
-Recommend a root outside the project: a new folder beside it — the session then launches one level
+Tickets live in `output_folder` beside the documents. To keep them outside the project, set `output_folder`
+under `[core]` in `_bmad/custom/config.toml` to a folder beside it — the session then launches one level
 up — or in the workspace that already holds the repos. `git init` a new folder so tickets have
 history; skip that when the user picks a folder already under git, the monorepo included. Then
-create root/backlog/ and the active initiative's folder when they do not exist.
+create `backlog/` and the active initiative's folder there when they do not exist.
 """
 
 write = """
@@ -53,7 +53,7 @@ Commit only the files you wrote on the current branch. Root not in a git repo: s
 query = """
 A ticket is named by its path and its `id` under its epic. `tickets.py find <folder> <ref>` resolves an id, `"2.3"`, a file name, or title words to the one ticket: its row, its entry's text fields, and the paths `epic_file`, `story_file`, and `plan`; by a frontmatter field, `grep -rl "^type: bug" root` — same for parent; status and assignee come from `tickets.py status`, which reads the plans. A container's children are the ticket files and container folders in its folder; planned children with no file are the entries in its `tickets.toml`. Frontmatter holds id,
 type, title, parent, covers (the source requirement ids), after, refined, hitl, risk, estimate, and severity on bugs; a
-pulled file carries only the ones its entry sets, and an absent field reads as empty. The plan's frontmatter holds status (absent until a build starts),
+pulled file always carries after and hitl and the rest only when its entry sets them. An absent after or hitl reads as empty; an absent covers or estimate reads the entry's. The plan's frontmatter holds status (absent until a build starts),
 assignee, and blocked_at and blocked_reason when blocked; `tickets.py` reads a leaf file's own status only when there is no plan.
 Candidates to start (one that `tickets.py next` lists under `ready_to_refine` gets its criteria first): no status, or draft or ready-for-dev; blocked_at empty; everything in after done; unassigned. Several ready tickets are parallel work;
 offer them all. When one must be chosen, take the one that unblocks the most work behind it.
