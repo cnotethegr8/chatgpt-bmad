@@ -1,12 +1,12 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-09-28T10:57:30.679Z",
+  "generatedAt": "2026-09-29T10:43:10.958Z",
   "upstream": {
     "repository": "bmad-code-org/BMAD-METHOD",
     "branch": "main",
-    "sha": "ec9a46ee2aef5631ea102faa969a6db5ee296ce1",
-    "committedAt": "2026-09-28T04:29:35Z",
-    "message": "feat(bmad): speak as BMad and route setup, migrate and initiative requests (#2974)\n\n* feat(bmad): speak as BMad and route setup, migrate and initiative requests\n\nThe bmad skill now opens with a BMad persona and a router to its three\nreferences, keeps the help procedure inline under a Help heading, defines\n{skill-root}, and may offer to invoke the next skill for the user.\n\n* fix(bmad): route add-module and config-change requests to setup"
+    "sha": "1cbcfa272fe65787c06a1fa164a901f46117cca7",
+    "committedAt": "2026-09-28T15:39:27Z",
+    "message": "feat(bmad): setup cleans up renamed and removed skills; help loads only for help requests (#2981) (#2983)\n\n* feat(bmad): setup cleans up renamed and removed skills, updates and migrates in one flow\n\nModules list renamed and removed skills in a retired.toml beside bmod.toml,\nreplacing removals.txt. Setup moves _bmad/custom files of renamed skills,\noffers to delete retired skills in project and global folders and drop them\nfrom the skills CLI lock, and offers the new name's install. It reads every\nactive skills root, reports duplicates and skills a module ships that are\nnot installed.\n\nSetup, status, update, repair and doctor are one flow in setup.md: check and\nreport, then update the skills, answer new config questions, refresh _bmad,\nclean up, and run a detected migration on request. bmad-preview-ticketing's\nforwarder is removed.\n\n* refactor: make active_initiative a core setting\n\nInitiatives are not specific to the method: core skills such as\nbrainstorming, research and party mode write into the initiative folder\ntoo. The key moves from [modules.bmm] to [core], and core help now explains\ninitiatives for any module; method help keeps only what the method puts in\nthe folder.\n\n* refactor(bmad): split help out of SKILL.md and load module help only for help requests\n\nSKILL.md keeps the persona and routes setup, migrate and initiative actions\nto their references without loading module help. Help and conversation load\nevery installed module's help with knowledge.py first, then follow the new\nreferences/help.md: see where the project stands, answer only from module\nhelp, and run skills or a sequence of them on request.\n\n* fix(bmad): skip tool skills folders linked outside the project; setup-run migrations verify\n\n* test(bmad): point USERPROFILE at the test home so the global cleanup test runs on Windows"
   },
   "roots": {
     "layout": "flat",
@@ -22,7 +22,7 @@
       {
         "name": "bmad-agent-analyst",
         "path": "skills/bmad-agent-analyst",
-        "sha": "0b2bb7c6a85101b854d7617c417ae7f46552d26d",
+        "sha": "b175ba83458a952a3683171825d8d533df0d2f11",
         "size": 0,
         "type": "dir",
         "downloadUrl": null
@@ -30,7 +30,7 @@
       {
         "name": "bmad-agent-architect",
         "path": "skills/bmad-agent-architect",
-        "sha": "da2c0b2f1cb09d84fa2e343850283b49554932df",
+        "sha": "235a9fe0f1ddde2ae35501658a2d93711076179c",
         "size": 0,
         "type": "dir",
         "downloadUrl": null
@@ -38,7 +38,7 @@
       {
         "name": "bmad-agent-dev",
         "path": "skills/bmad-agent-dev",
-        "sha": "0890ee7b4d20e57b282bae03735917cf5dea0e22",
+        "sha": "9223d643033225a08a3b2297b60c45fa99525864",
         "size": 0,
         "type": "dir",
         "downloadUrl": null
@@ -46,7 +46,7 @@
       {
         "name": "bmad-agent-pm",
         "path": "skills/bmad-agent-pm",
-        "sha": "1054c15e2a11aa093b75fa72fc01312faac321f0",
+        "sha": "8a6cc0d2b317492cbc9277bd83f8f534adfa6f93",
         "size": 0,
         "type": "dir",
         "downloadUrl": null
@@ -54,7 +54,7 @@
       {
         "name": "bmad-agent-ux-designer",
         "path": "skills/bmad-agent-ux-designer",
-        "sha": "f86f50e203f620d044c1b56ce485d347b86eab52",
+        "sha": "cb5a86768e88999e22e868b695a55e46e63f4263",
         "size": 0,
         "type": "dir",
         "downloadUrl": null
@@ -62,7 +62,7 @@
       {
         "name": "bmad-architecture",
         "path": "skills/bmad-architecture",
-        "sha": "70402b059f35b21bf94f48208369ed91acad7199",
+        "sha": "40ee14afb23f9d33bd507bc86204bba965e581f9",
         "size": 0,
         "type": "dir",
         "downloadUrl": null
@@ -70,7 +70,7 @@
       {
         "name": "bmad-brainstorming",
         "path": "skills/bmad-brainstorming",
-        "sha": "65badb3cb23c5de4e18a5208e007cdf4b1f1bc4a",
+        "sha": "425233bc345a08c8b0e53268d203720fcdd0198b",
         "size": 0,
         "type": "dir",
         "downloadUrl": null
@@ -78,7 +78,7 @@
       {
         "name": "bmad-build-auto",
         "path": "skills/bmad-build-auto",
-        "sha": "330c3766548cd54a36fdc7e01a9c14377bb126d2",
+        "sha": "8a0bf3f2e604c575133a6f7b6aca993462c0e064",
         "size": 0,
         "type": "dir",
         "downloadUrl": null
@@ -86,7 +86,7 @@
       {
         "name": "bmad-build",
         "path": "skills/bmad-build",
-        "sha": "f0efbdb27bfc2cac17819d92b4c28292d8ba473f",
+        "sha": "7f198bd7437cbc12a0bf4d58dc7bbc46016819f2",
         "size": 0,
         "type": "dir",
         "downloadUrl": null
@@ -94,7 +94,7 @@
       {
         "name": "bmad-code-review",
         "path": "skills/bmad-code-review",
-        "sha": "4eb4c9a65711f644250ae5f4f3fbd0885eee185a",
+        "sha": "e6d62906018b8731a4007d1d04e586d6b971ff80",
         "size": 0,
         "type": "dir",
         "downloadUrl": null
@@ -102,7 +102,7 @@
       {
         "name": "bmad-correct-course",
         "path": "skills/bmad-correct-course",
-        "sha": "68b163ba010e611c984967b5494a08b7fc55e77a",
+        "sha": "2845542f4fc8a206e6a30c3c2a57de273275648d",
         "size": 0,
         "type": "dir",
         "downloadUrl": null
@@ -118,7 +118,7 @@
       {
         "name": "bmad-deep-recon",
         "path": "skills/bmad-deep-recon",
-        "sha": "d40092d9fce15d9ee82246f2ddfba9f202855474",
+        "sha": "46940ecd32177ddf6c9617d7f82259fe6a4d7096",
         "size": 0,
         "type": "dir",
         "downloadUrl": null
@@ -126,7 +126,7 @@
       {
         "name": "bmad-forge-idea",
         "path": "skills/bmad-forge-idea",
-        "sha": "10a5d2b233a535fd43c611cac213972941fe544b",
+        "sha": "105a10f500305c19c46e6061f8a6f4e497a7f5b7",
         "size": 0,
         "type": "dir",
         "downloadUrl": null
@@ -134,7 +134,7 @@
       {
         "name": "bmad-party-mode",
         "path": "skills/bmad-party-mode",
-        "sha": "9300352a6f0f7a1faa01de495117a0d1635e740e",
+        "sha": "29e71c9d4d36f24523c233dbd9b9dbda4adea36c",
         "size": 0,
         "type": "dir",
         "downloadUrl": null
@@ -142,15 +142,7 @@
       {
         "name": "bmad-prd",
         "path": "skills/bmad-prd",
-        "sha": "6fc66eeba8d122f7c6788ebaf539c8abfafb09ba",
-        "size": 0,
-        "type": "dir",
-        "downloadUrl": null
-      },
-      {
-        "name": "bmad-preview-ticketing",
-        "path": "skills/bmad-preview-ticketing",
-        "sha": "334e9c12f441c65745eaa8bc146ce5b897456483",
+        "sha": "bdec139b594cfa0cd7e42f7275782e990078c5e1",
         "size": 0,
         "type": "dir",
         "downloadUrl": null
@@ -158,7 +150,7 @@
       {
         "name": "bmad-prfaq",
         "path": "skills/bmad-prfaq",
-        "sha": "7ef33bf3903fd1b957c9d70c42171b42d17b8049",
+        "sha": "04f66b95737981b7ca572820562ee7cf15df0eab",
         "size": 0,
         "type": "dir",
         "downloadUrl": null
@@ -166,7 +158,7 @@
       {
         "name": "bmad-product-brief",
         "path": "skills/bmad-product-brief",
-        "sha": "d43541d376f038820fea876dee98b20197226f33",
+        "sha": "2e1d7f44c843c1ae9783d1b66175526b0e0e7be2",
         "size": 0,
         "type": "dir",
         "downloadUrl": null
@@ -182,7 +174,7 @@
       {
         "name": "bmad-qa-generate-e2e-tests",
         "path": "skills/bmad-qa-generate-e2e-tests",
-        "sha": "fd3e73c9c63bcdc3bf5285450cd374eaee6f52bf",
+        "sha": "c2a3433f58dad446e328a261536a07ff2bdd2164",
         "size": 0,
         "type": "dir",
         "downloadUrl": null
@@ -190,7 +182,7 @@
       {
         "name": "bmad-retrospective",
         "path": "skills/bmad-retrospective",
-        "sha": "84d69b9e1d916843e6435a6a5d42e38fa5e227db",
+        "sha": "0612964121fcac1ed6fb857f9834cf70f6511f51",
         "size": 0,
         "type": "dir",
         "downloadUrl": null
@@ -206,7 +198,15 @@
       {
         "name": "bmad-spec",
         "path": "skills/bmad-spec",
-        "sha": "c485251005173dd689fd054419ae72184cdd3026",
+        "sha": "6aea50ee32720980e535449f41e2c55d9f9efd9d",
+        "size": 0,
+        "type": "dir",
+        "downloadUrl": null
+      },
+      {
+        "name": "bmad-ticket",
+        "path": "skills/bmad-ticket",
+        "sha": "46a6134b42c452b39f1a0db32a08f46a1ddffcc4",
         "size": 0,
         "type": "dir",
         "downloadUrl": null
@@ -214,7 +214,7 @@
       {
         "name": "bmad-ux",
         "path": "skills/bmad-ux",
-        "sha": "765ebb29471e445a9f7bc997a01b2dfe27513ab5",
+        "sha": "23d154c34892a3d1971517b68b7589d9ac345dde",
         "size": 0,
         "type": "dir",
         "downloadUrl": null
@@ -222,7 +222,7 @@
       {
         "name": "bmad-walkthrough",
         "path": "skills/bmad-walkthrough",
-        "sha": "d8131e2763459c54b2ec65eb9550849969619fbb",
+        "sha": "954e6605639fbc8dd59dd4221a934cd50bcf5641",
         "size": 0,
         "type": "dir",
         "downloadUrl": null
@@ -230,7 +230,7 @@
       {
         "name": "bmad",
         "path": "skills/bmad",
-        "sha": "e31993b22c04e07dc319d282a2d2d95b55483699",
+        "sha": "14d827ccd4d4cd6f94bdba182d2c7a39378e9747",
         "size": 0,
         "type": "dir",
         "downloadUrl": null
@@ -238,7 +238,7 @@
       {
         "name": "bmod-core-tools",
         "path": "skills/bmod-core-tools",
-        "sha": "dc9dc80457d271f1af7ebeb8a4988c1507fc4bd2",
+        "sha": "b3b88e88e38af300c5f4510044d7b6a7c17e36b1",
         "size": 0,
         "type": "dir",
         "downloadUrl": null
@@ -246,7 +246,7 @@
       {
         "name": "bmod-method",
         "path": "skills/bmod-method",
-        "sha": "a51412681193654e48ab50b5a538edac45f38fbc",
+        "sha": "b721ccd1b440fd5892595e7f9928d35a81af60e1",
         "size": 0,
         "type": "dir",
         "downloadUrl": null
@@ -259,15 +259,15 @@
         "sha": "55cefc220face9c85c452c9883b0fca7f9accb5e",
         "size": 4096,
         "type": "file",
-        "downloadUrl": "https://raw.githubusercontent.com/bmad-code-org/BMAD-METHOD/ec9a46ee2aef5631ea102faa969a6db5ee296ce1/skills/bmad/scripts/config_utils.py"
+        "downloadUrl": "https://raw.githubusercontent.com/bmad-code-org/BMAD-METHOD/1cbcfa272fe65787c06a1fa164a901f46117cca7/skills/bmad/scripts/config_utils.py"
       },
       {
         "name": "knowledge.py",
         "path": "skills/bmad/scripts/knowledge.py",
-        "sha": "7c708c021f422412f3773261b8060a2e9d21af86",
-        "size": 17611,
+        "sha": "9671e35e520c79a5a60b8b47b2c798566fc70296",
+        "size": 17677,
         "type": "file",
-        "downloadUrl": "https://raw.githubusercontent.com/bmad-code-org/BMAD-METHOD/ec9a46ee2aef5631ea102faa969a6db5ee296ce1/skills/bmad/scripts/knowledge.py"
+        "downloadUrl": "https://raw.githubusercontent.com/bmad-code-org/BMAD-METHOD/1cbcfa272fe65787c06a1fa164a901f46117cca7/skills/bmad/scripts/knowledge.py"
       },
       {
         "name": "memlog.py",
@@ -275,7 +275,7 @@
         "sha": "18c9f69bf6ec169e7a221fc43fd8a4b0d0d67f90",
         "size": 9465,
         "type": "file",
-        "downloadUrl": "https://raw.githubusercontent.com/bmad-code-org/BMAD-METHOD/ec9a46ee2aef5631ea102faa969a6db5ee296ce1/skills/bmad/scripts/memlog.py"
+        "downloadUrl": "https://raw.githubusercontent.com/bmad-code-org/BMAD-METHOD/1cbcfa272fe65787c06a1fa164a901f46117cca7/skills/bmad/scripts/memlog.py"
       },
       {
         "name": "render_skill.py",
@@ -283,7 +283,7 @@
         "sha": "e7e2f754deb1e8eeb0c43c84719f811f6d59ac68",
         "size": 27335,
         "type": "file",
-        "downloadUrl": "https://raw.githubusercontent.com/bmad-code-org/BMAD-METHOD/ec9a46ee2aef5631ea102faa969a6db5ee296ce1/skills/bmad/scripts/render_skill.py"
+        "downloadUrl": "https://raw.githubusercontent.com/bmad-code-org/BMAD-METHOD/1cbcfa272fe65787c06a1fa164a901f46117cca7/skills/bmad/scripts/render_skill.py"
       },
       {
         "name": "resolve_config.py",
@@ -291,7 +291,7 @@
         "sha": "2af0e64a132e2d58b9ad50d301bb4f8a1838e619",
         "size": 2375,
         "type": "file",
-        "downloadUrl": "https://raw.githubusercontent.com/bmad-code-org/BMAD-METHOD/ec9a46ee2aef5631ea102faa969a6db5ee296ce1/skills/bmad/scripts/resolve_config.py"
+        "downloadUrl": "https://raw.githubusercontent.com/bmad-code-org/BMAD-METHOD/1cbcfa272fe65787c06a1fa164a901f46117cca7/skills/bmad/scripts/resolve_config.py"
       },
       {
         "name": "resolve_customization.py",
@@ -299,7 +299,7 @@
         "sha": "d99e7cfa44794c04817bfe74fe32a0bf37fa23e5",
         "size": 5786,
         "type": "file",
-        "downloadUrl": "https://raw.githubusercontent.com/bmad-code-org/BMAD-METHOD/ec9a46ee2aef5631ea102faa969a6db5ee296ce1/skills/bmad/scripts/resolve_customization.py"
+        "downloadUrl": "https://raw.githubusercontent.com/bmad-code-org/BMAD-METHOD/1cbcfa272fe65787c06a1fa164a901f46117cca7/skills/bmad/scripts/resolve_customization.py"
       },
       {
         "name": "roster.py",
@@ -307,15 +307,15 @@
         "sha": "4675a2c6d007996ceaae20beb8462125544672e8",
         "size": 9121,
         "type": "file",
-        "downloadUrl": "https://raw.githubusercontent.com/bmad-code-org/BMAD-METHOD/ec9a46ee2aef5631ea102faa969a6db5ee296ce1/skills/bmad/scripts/roster.py"
+        "downloadUrl": "https://raw.githubusercontent.com/bmad-code-org/BMAD-METHOD/1cbcfa272fe65787c06a1fa164a901f46117cca7/skills/bmad/scripts/roster.py"
       },
       {
         "name": "setup.py",
         "path": "skills/bmad/scripts/setup.py",
-        "sha": "77ddca1437dc860f7c4c9d22e95343f68b7b172b",
-        "size": 77230,
+        "sha": "22735875e59a54b9d7154a444480721836f6c5c1",
+        "size": 97634,
         "type": "file",
-        "downloadUrl": "https://raw.githubusercontent.com/bmad-code-org/BMAD-METHOD/ec9a46ee2aef5631ea102faa969a6db5ee296ce1/skills/bmad/scripts/setup.py"
+        "downloadUrl": "https://raw.githubusercontent.com/bmad-code-org/BMAD-METHOD/1cbcfa272fe65787c06a1fa164a901f46117cca7/skills/bmad/scripts/setup.py"
       },
       {
         "name": "setup_check.py",
@@ -323,12 +323,12 @@
         "sha": "b225e74acf523953becb03888448a20d35265964",
         "size": 5691,
         "type": "file",
-        "downloadUrl": "https://raw.githubusercontent.com/bmad-code-org/BMAD-METHOD/ec9a46ee2aef5631ea102faa969a6db5ee296ce1/skills/bmad/scripts/setup_check.py"
+        "downloadUrl": "https://raw.githubusercontent.com/bmad-code-org/BMAD-METHOD/1cbcfa272fe65787c06a1fa164a901f46117cca7/skills/bmad/scripts/setup_check.py"
       },
       {
         "name": "tests",
         "path": "skills/bmad/scripts/tests",
-        "sha": "93db035e7a908c222118eefa1ae44221bd303fd8",
+        "sha": "647719eea679d047c415a15504cdf94ca1492404",
         "size": 0,
         "type": "dir",
         "downloadUrl": null

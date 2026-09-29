@@ -7,7 +7,7 @@ Read this when the question is about `bmad-build`, `bmad-build-auto`, or `bmad-c
 - Pick when: any feature, story, bug fix, or meaningful change. It is the default, and risky or foundational stories belong here because a human approves the plan.
 - Not when: typo-level or config edits, or edits the user is directing line by line.
 - Size: one session is one goal, roughly 500 changed lines, not counting tests, in a handful of files. Start it in a fresh chat.
-- Its review: built in and done by agents. By default a small change gets a quick review with one lens and a full change gets a thorough review with four independent lenses. The user can say `none`, `quick`, or `thorough` in the request. It fixes clear findings itself and returns to the human when intent is in doubt. It commits and never pushes.
+- Its review: built in and done by agents. By default it runs a quick review with one lens; a thorough review runs four independent lenses. The user can say `none`, `quick`, or `thorough` in the request. It fixes clear findings itself and returns to the human when intent is in doubt. It commits and never pushes.
 - Writes: a ticket's plan beside `tickets.toml`, or in `backlog/` for a backlog ticket, at the path `tickets.py find` returns, with `ticket` and a `status` it moves as far as `built`; the user marks the ticket done. Other work gets `{output_folder}/{active_initiative}/plan-<slug>.md`. Deferred goals go in `{output_folder}/{active_initiative}/deferred-work.md`. With no initiative active, both go in `{output_folder}/`.
 
 **`bmad-build-auto`** — one unattended build of one ticket, for a loop or script that dispatches it.
@@ -16,8 +16,8 @@ Read this when the question is about `bmad-build`, `bmad-build-auto`, or `bmad-c
 - Writes: the same plans as `bmad-build`.
 
 **`bmad-correct-course`** — assesses a significant midstream change.
-- Gives: a change proposal covering impact across PRD, epics, architecture, and UX; a recommended path (adjust, roll back, or cut scope); and proposed edits. It drafts the edits to the PRD, architecture, UX, and stories and does not apply them: the user applies those through the owning skills. Its handoff lists the added, removed, resequenced, or rescoped epics and stories for the user to apply with the ticketing skill.
+- Gives: a change proposal covering impact across PRD, epics, architecture, and UX; a recommended path (adjust, roll back, or cut scope); and proposed edits. It drafts the edits to the PRD, architecture, UX, and stories and does not apply them: the user applies those through the owning skills. Its handoff lists the added, removed, resequenced, or rescoped epics and stories for the user to apply with `bmad-ticket`.
 - Pick when: a ticket exposes something that reaches across artifacts, such as a technical limit, a new or misread requirement, a pivot, or a failed approach.
-- Not when: there is neither a PRD nor a spec (it halts). A change that touches only the spec → update it with `bmad-spec`. A change that only re-slices tickets → `bmad-preview-ticketing`.
+- Not when: there is neither a PRD nor a spec (it halts). A change that touches only the spec → update it with `bmad-spec`. A change that only re-slices tickets → `bmad-ticket`.
 - Reads: the PRD or spec, plus architecture and UX when present. It reads no epics file or ticket tree; the user describes the affected epics and stories.
 - Writes: `{output_folder}/{active_initiative}/change-<slug>/change-<slug>.md`.

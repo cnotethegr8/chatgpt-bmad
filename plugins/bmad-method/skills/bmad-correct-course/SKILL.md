@@ -53,7 +53,7 @@ Treat every entry in `{workflow.persistent_facts}` as foundational context you c
 
 ### Step 4: Load Config
 
-Run: `uv run {project-root}/_bmad/scripts/resolve_config.py --project-root {project-root} --key core.output_folder --key modules.bmm.active_initiative`
+Run: `uv run {project-root}/_bmad/scripts/resolve_config.py --project-root {project-root} --key core.output_folder --key core.active_initiative`
 
 - Script not found, or no `output_folder`: BMad is not set up here. Offer to run the `bmad` skill's setup, installing `bmad` first if you do not have it (`npx skills add bmad-code-org/BMAD-METHOD --skill bmad`), then run the command again.
 - No `active_initiative`: hand off to the `bmad` skill to set or create one, then run the command again and continue.
@@ -237,7 +237,7 @@ Look in `{output_folder}/{active_initiative}/` first, then `{output_folder}/`.
   - Minor: Direct implementation by Developer agent
   - Moderate: Backlog reorganization needed (PO/DEV)
   - Major: Fundamental replan required (PM/Architect)
-- List the epic and story changes (added, removed, resequenced, or rescoped) for the user to apply with the ticketing skill
+- List the epic and story changes (added, removed, resequenced, or rescoped) for the user to apply with `bmad-ticket`
 - Specify handoff recipients and their responsibilities
 - Define success criteria for implementation
 

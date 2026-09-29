@@ -33,7 +33,7 @@ Multiple skills may call to update the same spec over time.
    - Script not found: BMad is not set up here. Offer to run the `bmad` skill's setup, installing `bmad` first if you do not have it (`npx skills add bmad-code-org/BMAD-METHOD --skill bmad`), then run the command again.
    - Any other failure: read `{skill-root}/customize.toml` directly.
 2. Run `{workflow.activation_steps_prepend}`. Treat `{workflow.persistent_facts}` as foundational context (`file:` entries are loaded).
-3. Resolve config: `uv run {project-root}/_bmad/scripts/resolve_config.py --project-root {project-root} --key core.output_folder --key modules.bmm.active_initiative`. `{date}` is the current system datetime.
+3. Resolve config: `uv run {project-root}/_bmad/scripts/resolve_config.py --project-root {project-root} --key core.output_folder --key core.active_initiative`. `{date}` is the current system datetime.
    - Script not found, or no `output_folder`: BMad is not set up here. Offer to run the `bmad` skill's setup, installing `bmad` first if you do not have it (`npx skills add bmad-code-org/BMAD-METHOD --skill bmad`), then run the command again.
    - No `active_initiative`: hand off to the `bmad` skill to set or create one, then run the command again and continue. Headless: write loose.
 4. Detect mode. **Headless** when any of: no TTY, programmatic caller (another skill or non-interactive runner), or the first message pre-supplies all inputs and asks for an artifact path back. **Interactive** otherwise. In interactive mode, greet the user and mention that `bmad-party-mode` and `bmad-advanced-elicitation` are available for deeper exploration on any field.
@@ -141,13 +141,13 @@ Record the verdict for each pass to `.memlog.md` (`append --type event`). In int
 
 When the user points the skill at an existing spec folder (or its spec-{slug}.md) with no change signal, offer to review assumptions or open questions, or determine what they want to do.
 
-## Handing off to ticketing (optional, interactive-only)
+## Handing off to `bmad-ticket` (optional, interactive-only)
 
 Requires `spec-{slug}.md` on disk — run the normal Operation first if it doesn't exist yet. Headless runs never do this, even when the invocation text asks for it: if mode detection (On Activation, step 4) resolved headless, skip this section entirely and proceed with the normal headless response. In interactive mode, offer the handoff at most once per run when the input reads as multiple independently shippable slices; a decline ends the offer for this run, not forever.
 
-Hand the spec folder to `bmad-preview-ticketing` as the requirement source: it plans the work with the user as an epic whose `tickets.toml` entries cite this spec's `CAP-N` ids, and it runs the board from there. Load-bearing detail the slicing conversation surfaces (a constraint, a design decision) comes back here as a spec update, never into a ticket alone.
+Hand the spec folder to `bmad-ticket` as the requirement source: it plans the work with the user as an epic whose `tickets.toml` entries cite this spec's `CAP-N` ids, and it runs the board from there. Load-bearing detail the slicing conversation surfaces (a constraint, a design decision) comes back here as a spec update, never into a ticket alone.
 
-When a spec update runs, search the ticket root for this spec folder's path in References; where tickets cite it, name the entries and tickets whose description no longer matches and offer to re-slice them with `bmad-preview-ticketing`. The update itself never edits a ticket.
+When a spec update runs, search the ticket root for this spec folder's path in References; where tickets cite it, name the entries and tickets whose description no longer matches and offer to re-slice them with `bmad-ticket`. The update itself never edits a ticket.
 
 ## Output
 
