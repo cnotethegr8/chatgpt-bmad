@@ -6,7 +6,7 @@
 
 The library is a CSV (category, technique_name, description, detail). `description`
 is a short gist — enough to propose and run most techniques. `detail` is optional:
-a path (relative to the CSV's directory) to a fuller instruction file for a technique
+a path (relative to the CSV's directory, and inside it) to a fuller instruction file for a technique
 complex enough to warrant one. Only `show` resolves detail files, and only for the
 technique asked for — so the heavy material never enters context until it is run.
 
@@ -49,6 +49,7 @@ FIELDS = ("category", "technique_name", "description", "detail", "provenance", "
 # list of goal tags) drives the browse page's goal filter; `audience` (solo|group|either)
 # is advisory.
 OPTIONAL_FIELDS = ("detail", "provenance", "good_for", "audience")
+REQUIRED_FIELDS = ("category", "technique_name", "description")
 
 
 def load(file: Path) -> list[dict]:
@@ -72,20 +73,14 @@ def load_extra(file: Path) -> list[dict]:
     if not isinstance(data, list):
         raise ValueError("--extra must be a JSON array of objects")
     rows = []
-    for item in data:
+    for n, item in enumerate(data, 1):
         if not isinstance(item, dict):
             raise ValueError(f"each --extra entry must be a JSON object, got: {item!r}")
-        rows.append(
-            {
-                "category": str(item.get("category", "")).strip(),
-                "technique_name": str(item.get("technique_name", "")).strip(),
-                "description": str(item.get("description", "")).strip(),
-                "detail": str(item.get("detail") or "").strip(),
-                "provenance": str(item.get("provenance") or "").strip(),
-                "good_for": str(item.get("good_for") or "").strip(),
-                "audience": str(item.get("audience") or "").strip(),
-            }
-        )
+        row = {k: str(item.get(k) or "").strip() for k in FIELDS}
+        for field in REQUIRED_FIELDS:
+            if not row[field]:
+                raise ValueError(f"--extra entry {n} ({row['technique_name'] or 'unnamed'}) is missing {field}")
+        rows.append(row)
     return rows
 
 
@@ -130,10 +125,17 @@ def find(rows: list[dict], names: list[str]) -> tuple[list[dict], list[str]]:
 
 def resolve_detail(row: dict, csv_dir: Path) -> str | None:
     """Return the contents of a row's detail file, or None if there is no detail
-    (or the file is missing — a missing file is reported to stderr, not fatal)."""
+    (or the file is missing or outside csv_dir — reported to stderr, not fatal)."""
     if not row.get("detail"):
         return None
-    path = (csv_dir / row["detail"]).resolve()
+    base = csv_dir.resolve()
+    path = (base / row["detail"]).resolve()
+    if not path.is_relative_to(base):
+        print(
+            f"# detail path outside the catalog folder, refused for {row['technique_name']}: {row['detail']}",
+            file=sys.stderr,
+        )
+        return None
     if not path.is_file():
         print(f"# detail file not found for {row['technique_name']}: {row['detail']}", file=sys.stderr)
         return None

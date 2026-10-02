@@ -76,6 +76,61 @@ def test_resolve_detail_missing_file_warns_not_fatal(lib, capsys):
     assert "not found" in capsys.readouterr().err
 
 
+def test_resolve_detail_nested_relative_path_reads(lib):
+    (lib.parent / "techniques" / "deep").mkdir()
+    (lib.parent / "techniques" / "deep" / "x.md").write_text("inside", encoding="utf-8")
+    row = {"technique_name": "T", "detail": "techniques/../techniques/deep/x.md"}
+    assert brain.resolve_detail(row, lib.parent) == "inside"
+
+
+@pytest.mark.parametrize("detail", ["../secret.txt", "techniques/../../secret.txt"])
+def test_resolve_detail_refuses_dotdot_escape(tmp_path, capsys, detail):
+    (tmp_path / "secret.txt").write_text("SECRET", encoding="utf-8")
+    catalog = tmp_path / "catalog"
+    (catalog / "techniques").mkdir(parents=True)
+    assert brain.resolve_detail({"technique_name": "T", "detail": detail}, catalog) is None
+    assert f"refused for T: {detail}" in capsys.readouterr().err
+
+
+def test_resolve_detail_refuses_absolute_path(tmp_path, capsys):
+    secret = tmp_path / "secret.txt"
+    secret.write_text("SECRET", encoding="utf-8")
+    catalog = tmp_path / "catalog"
+    catalog.mkdir()
+    assert brain.resolve_detail({"technique_name": "T", "detail": str(secret)}, catalog) is None
+    assert f"refused for T: {secret}" in capsys.readouterr().err
+
+
+def test_resolve_detail_refuses_symlink_out(tmp_path, capsys):
+    (tmp_path / "secret.txt").write_text("SECRET", encoding="utf-8")
+    catalog = tmp_path / "catalog"
+    catalog.mkdir()
+    try:
+        (catalog / "link.md").symlink_to(tmp_path / "secret.txt")
+    except OSError:
+        pytest.skip("symlinks not permitted here")
+    assert brain.resolve_detail({"technique_name": "T", "detail": "link.md"}, catalog) is None
+    assert "refused for T: link.md" in capsys.readouterr().err
+
+
+def test_show_refuses_extra_detail_outside_catalog(tmp_path, capsys):
+    secret = tmp_path / "secret.txt"
+    secret.write_text("SECRET", encoding="utf-8")
+    catalog = tmp_path / "catalog"
+    catalog.mkdir()
+    lib = catalog / "brain-methods.csv"
+    lib.write_text(CSV, encoding="utf-8")
+    extra = tmp_path / "extra.json"
+    extra.write_text(
+        json.dumps([{"category": "custom", "technique_name": "Pwn", "description": "gist", "detail": str(secret)}]),
+        encoding="utf-8",
+    )
+    assert brain.main(["--file", str(lib), "--extra", str(extra), "show", "Pwn"]) == 0
+    captured = capsys.readouterr()
+    assert "SECRET" not in captured.out and "gist" in captured.out
+    assert "refused for Pwn" in captured.err
+
+
 def test_show_inlines_detail(lib, capsys):
     assert brain.main(["--file", str(lib), "show", "Quantum Superposition"]) == 0
     out = capsys.readouterr().out
@@ -212,6 +267,15 @@ def test_extra_malformed_exits_cleanly(lib, tmp_path, capsys):
         bad.write_text(content, encoding="utf-8")
         assert brain.main(["--file", str(lib), "--extra", str(bad), "categories"]) == 2
         assert "could not read --extra" in capsys.readouterr().err
+
+
+def test_extra_row_missing_a_required_field_exits_2_naming_row_and_field(lib, tmp_path, capsys):
+    overlay = tmp_path / "partial.json"
+    overlay.write_text(json.dumps([{"technique_name": "Half Done", "description": "No category."}]), encoding="utf-8")
+    assert brain.main(["--file", str(lib), "--extra", str(overlay), "list", "--all"]) == 2
+    captured = capsys.readouterr()
+    assert captured.out == ""
+    assert "Half Done" in captured.err and "category" in captured.err
 
 
 def test_extra_is_first_class_in_html(lib, extra, tmp_path):
