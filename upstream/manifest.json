@@ -1,12 +1,12 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-04T10:36:17.757Z",
+  "generatedAt": "2026-10-05T11:32:14.150Z",
   "upstream": {
     "repository": "bmad-code-org/BMAD-METHOD",
     "branch": "main",
-    "sha": "3cae711ea5274cf7c7cf6e173bb8d7f29cd71497",
-    "committedAt": "2026-10-03T06:44:54Z",
-    "message": "Merge pull request #3022 from bmad-code-org/ticketing-alignment\n\nfeat(ticket): layered store config, tracker mirror, risk in the plan, and a shorter bmad-ticket"
+    "sha": "8f2c13dd0e0073cad84168a679e5c553b2fb30b6",
+    "committedAt": "2026-10-04T18:52:59Z",
+    "message": "feat(tools): add dogfood.py, move the docs output to docs-site/dist, prune .gitignore (#3035)\n\n- tools/dogfood.py sets up BMad in a fresh checkout or worktree with no\n  inference: it installs a subset of skills with npx skills (from the\n  checkout itself by default), builds _bmad with the bmad skill's\n  setup.py, and copies core.output_folder from the main checkout's local\n  config. Options: --source, --skills, --agents, --custom-from, --reset,\n  and an optional dogfood.toml. It exits non-zero when setup reports\n  problems or unmet requirements.\n- The docs site builds to Astro's default docs-site/dist instead of the\n  repo-root build/site, so it no longer shares a name with docs/build/.\n  The Pages upload path, build script, validators, test, and README\n  follow.\n- .gitignore drops rules for things nothing creates any more, makes\n  .agents and .ai match as directories, restores .gemini, adds .idea/\n  and /dogfood.toml, and folds the rest into two sections."
   },
   "roots": {
     "layout": "flat",
@@ -259,7 +259,7 @@
         "sha": "55cefc220face9c85c452c9883b0fca7f9accb5e",
         "size": 4096,
         "type": "file",
-        "downloadUrl": "https://raw.githubusercontent.com/bmad-code-org/BMAD-METHOD/3cae711ea5274cf7c7cf6e173bb8d7f29cd71497/skills/bmad/scripts/config_utils.py"
+        "downloadUrl": "https://raw.githubusercontent.com/bmad-code-org/BMAD-METHOD/8f2c13dd0e0073cad84168a679e5c553b2fb30b6/skills/bmad/scripts/config_utils.py"
       },
       {
         "name": "knowledge.py",
@@ -267,7 +267,7 @@
         "sha": "b23d3a948dc2528c307e8d45a68edc2b55afca40",
         "size": 18894,
         "type": "file",
-        "downloadUrl": "https://raw.githubusercontent.com/bmad-code-org/BMAD-METHOD/3cae711ea5274cf7c7cf6e173bb8d7f29cd71497/skills/bmad/scripts/knowledge.py"
+        "downloadUrl": "https://raw.githubusercontent.com/bmad-code-org/BMAD-METHOD/8f2c13dd0e0073cad84168a679e5c553b2fb30b6/skills/bmad/scripts/knowledge.py"
       },
       {
         "name": "memlog.py",
@@ -275,7 +275,7 @@
         "sha": "57a7cb3b43ba7534d3da6490a0ba8e0c99d8b827",
         "size": 11959,
         "type": "file",
-        "downloadUrl": "https://raw.githubusercontent.com/bmad-code-org/BMAD-METHOD/3cae711ea5274cf7c7cf6e173bb8d7f29cd71497/skills/bmad/scripts/memlog.py"
+        "downloadUrl": "https://raw.githubusercontent.com/bmad-code-org/BMAD-METHOD/8f2c13dd0e0073cad84168a679e5c553b2fb30b6/skills/bmad/scripts/memlog.py"
       },
       {
         "name": "render_skill.py",
@@ -283,7 +283,7 @@
         "sha": "e7e2f754deb1e8eeb0c43c84719f811f6d59ac68",
         "size": 27335,
         "type": "file",
-        "downloadUrl": "https://raw.githubusercontent.com/bmad-code-org/BMAD-METHOD/3cae711ea5274cf7c7cf6e173bb8d7f29cd71497/skills/bmad/scripts/render_skill.py"
+        "downloadUrl": "https://raw.githubusercontent.com/bmad-code-org/BMAD-METHOD/8f2c13dd0e0073cad84168a679e5c553b2fb30b6/skills/bmad/scripts/render_skill.py"
       },
       {
         "name": "resolve_config.py",
@@ -291,7 +291,7 @@
         "sha": "2af0e64a132e2d58b9ad50d301bb4f8a1838e619",
         "size": 2375,
         "type": "file",
-        "downloadUrl": "https://raw.githubusercontent.com/bmad-code-org/BMAD-METHOD/3cae711ea5274cf7c7cf6e173bb8d7f29cd71497/skills/bmad/scripts/resolve_config.py"
+        "downloadUrl": "https://raw.githubusercontent.com/bmad-code-org/BMAD-METHOD/8f2c13dd0e0073cad84168a679e5c553b2fb30b6/skills/bmad/scripts/resolve_config.py"
       },
       {
         "name": "resolve_customization.py",
@@ -299,7 +299,7 @@
         "sha": "d99e7cfa44794c04817bfe74fe32a0bf37fa23e5",
         "size": 5786,
         "type": "file",
-        "downloadUrl": "https://raw.githubusercontent.com/bmad-code-org/BMAD-METHOD/3cae711ea5274cf7c7cf6e173bb8d7f29cd71497/skills/bmad/scripts/resolve_customization.py"
+        "downloadUrl": "https://raw.githubusercontent.com/bmad-code-org/BMAD-METHOD/8f2c13dd0e0073cad84168a679e5c553b2fb30b6/skills/bmad/scripts/resolve_customization.py"
       },
       {
         "name": "roster.py",
@@ -307,7 +307,7 @@
         "sha": "4675a2c6d007996ceaae20beb8462125544672e8",
         "size": 9121,
         "type": "file",
-        "downloadUrl": "https://raw.githubusercontent.com/bmad-code-org/BMAD-METHOD/3cae711ea5274cf7c7cf6e173bb8d7f29cd71497/skills/bmad/scripts/roster.py"
+        "downloadUrl": "https://raw.githubusercontent.com/bmad-code-org/BMAD-METHOD/8f2c13dd0e0073cad84168a679e5c553b2fb30b6/skills/bmad/scripts/roster.py"
       },
       {
         "name": "setup.py",
@@ -315,7 +315,7 @@
         "sha": "78ceb570d03ff3170d80dd923090ce8967b2c288",
         "size": 100712,
         "type": "file",
-        "downloadUrl": "https://raw.githubusercontent.com/bmad-code-org/BMAD-METHOD/3cae711ea5274cf7c7cf6e173bb8d7f29cd71497/skills/bmad/scripts/setup.py"
+        "downloadUrl": "https://raw.githubusercontent.com/bmad-code-org/BMAD-METHOD/8f2c13dd0e0073cad84168a679e5c553b2fb30b6/skills/bmad/scripts/setup.py"
       },
       {
         "name": "setup_check.py",
@@ -323,7 +323,7 @@
         "sha": "b225e74acf523953becb03888448a20d35265964",
         "size": 5691,
         "type": "file",
-        "downloadUrl": "https://raw.githubusercontent.com/bmad-code-org/BMAD-METHOD/3cae711ea5274cf7c7cf6e173bb8d7f29cd71497/skills/bmad/scripts/setup_check.py"
+        "downloadUrl": "https://raw.githubusercontent.com/bmad-code-org/BMAD-METHOD/8f2c13dd0e0073cad84168a679e5c553b2fb30b6/skills/bmad/scripts/setup_check.py"
       },
       {
         "name": "stamp_release.py",
@@ -331,7 +331,7 @@
         "sha": "c413b2afb74d1bd354a61bb114fcbf81409ed50b",
         "size": 5367,
         "type": "file",
-        "downloadUrl": "https://raw.githubusercontent.com/bmad-code-org/BMAD-METHOD/3cae711ea5274cf7c7cf6e173bb8d7f29cd71497/skills/bmad/scripts/stamp_release.py"
+        "downloadUrl": "https://raw.githubusercontent.com/bmad-code-org/BMAD-METHOD/8f2c13dd0e0073cad84168a679e5c553b2fb30b6/skills/bmad/scripts/stamp_release.py"
       },
       {
         "name": "tests",
@@ -347,7 +347,7 @@
         "sha": "4f09a353791a12c9de78c5f3df84aa8f08bf7cdb",
         "size": 21439,
         "type": "file",
-        "downloadUrl": "https://raw.githubusercontent.com/bmad-code-org/BMAD-METHOD/3cae711ea5274cf7c7cf6e173bb8d7f29cd71497/skills/bmad/scripts/validate_manifests.py"
+        "downloadUrl": "https://raw.githubusercontent.com/bmad-code-org/BMAD-METHOD/8f2c13dd0e0073cad84168a679e5c553b2fb30b6/skills/bmad/scripts/validate_manifests.py"
       }
     ]
   }
