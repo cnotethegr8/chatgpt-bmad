@@ -14,13 +14,16 @@ python3 "{skill-root}/scripts/chatgpt_bootstrap.py" "{project-root}"
 This materializes BMAD's shared runtime and neutral default configuration at `{project-root}/_bmad` when they are not already present. Existing BMAD configuration is preserved. If bootstrap fails, report the error and halt.
 
 
-Run the following command exactly once without changing the current working directory. Replace `{project-root}` with the absolute path to the project root and `{skill-root}` with the absolute path to this skill's directory:
+Run the following command exactly once without changing the current working directory.
+
+Replace `{project-root}` with the absolute path to the project root and `{skill-root}` with the absolute path to this skill's directory.
+
+If the invocation specifies a `quick` or `thorough` review, append `--set workflow.review=<value>` to the command.
 
 ```bash
 uv run --no-cache "{project-root}/_bmad/scripts/render_skill.py" --project-root "{project-root}" --skill "{skill-root}"
 ```
 
-- When the invocation names a review selection (`quick` or `thorough`), append `--set workflow.review=<value>` to the command.
-- On success, read and follow the one absolute `workflow.md` instruction printed to stdout.
-- If the script is not found, BMad is not set up here. Offer to run the `bmad` skill's setup, installing `bmad` first if you do not have it (`npx skills add bmad-code-org/BMAD-METHOD --skill bmad`), then run the command above once more.
-- On any other failure (including `uv` being unavailable), report the command output and HALT. Do not run any workflow source directly.
+- The command should print one line to stdout. `read and follow <rendered workflow.md>`: read that file and follow it. `HALT: <reason>`: report the reason and stop.
+- If the script does not exist, BMad is not set up in this project yet. Offer to set it up using `bmad` skill, then run the command again. If you do not have the `bmad` skill, offer to install it first.
+- On any other output or failure, including `uv` being unavailable, report the command output and stop. Do not run any workflow source directly.
