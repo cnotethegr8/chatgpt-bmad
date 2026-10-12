@@ -16,7 +16,8 @@ This materializes BMAD's shared runtime and neutral default configuration at `{p
 
 Run the following command exactly once without changing the current working directory.
 
-Replace `{project-root}` with the absolute path to the project root and `{skill-root}` with the absolute path to this skill's directory.
+Replace `{project-root}` with the nearest folder containing `_bmad/`, from the working directory upward.
+Replace `{skill-root}` with the absolute path to this skill's directory.
 
 If the invocation specifies a `quick` or `thorough` review, append `--set workflow.review=<value>` to the command.
 

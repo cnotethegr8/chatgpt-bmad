@@ -70,7 +70,7 @@ Situations the tree above does not settle.
 | "Can BMad build my stories by itself?" | `bmad-build-auto`, dispatched per story by a loop | It suits settled decisions and well specified stories, with someone reading the results. For work planned with `bmad-ticket`, give it the ticket, one run per ticket (`help/unattended-builds.md`). |
 | Wants tickets or a tracker (Jira, Linear, GitHub) as the record | `bmad-ticket` | Tickets are the board. The build moves a ticket's `status` in its plan as far as `built`, and the user marks it done. |
 | "Where are we?" | `bmad-ticket` status | Reads the ticket tree and joined plan statuses. |
-| A v6 project (`epics.md`, `sprint-status.yaml`, dated folders under the planning folder) that wants the v7 layout | `bmad migrate method` | The module ships `migration-1.toml`: the rules for moving the project's artifacts into initiative folders, turning epics and sprint status into a ticket tree, and putting loose work in `inbox/`. The `bmad` skill plans it with the user, then performs it. |
+| A v6 project (`epics.md`, `sprint-status.yaml`, dated folders under the planning folder) that wants the v7 layout | `bmad migrate method` | The module ships `migration-1.toml`: the rules for turning the planning folder into an initiative, moving document folders into it whole, and turning epics and sprint status into a ticket tree. Unrecognized files outside the planning folder stay where they are. The `bmad` skill plans it with the user, then performs it. |
 | A PR, a branch, a ticket in review, or code `bmad-build` did not write | `bmad-code-review` | Agent lenses over any diff. With no argument it offers the tickets in review. |
 | "Walk me through what changed" | `bmad-walkthrough` | The human is the reviewer. |
 | Every ticket of an epic is built, done, or dropped | `bmad-retrospective` | It judges the whole against the epic's Done when and the initiative's requirements. |
@@ -100,7 +100,7 @@ One line per skill: what it is for and what it writes. The files it writes are h
 | **Validation** (`help/validation-skills.md`) | | |
 | `bmad-code-review` | Agent review of any diff, PR, or branch, with triaged findings. Redundant right after a thorough `bmad-build` review of the same change. | A dated block in the plan's `## Code Review` section, or chat |
 | `bmad-walkthrough` | The human reviews a change block by block, guided. Also a way to learn unfamiliar code. | `walkthrough-<slug>/` with the narrative and a `-log.md` |
-| `bmad-qa-generate-e2e-tests` | API and end-to-end tests for features that already exist. | `{project-root}/tests`, `test-summary-<slug>/test-summary-<slug>.md` |
+| `bmad-qa-generate-e2e-tests` | API and end-to-end tests for features that already exist. | Tests where the project keeps its end-to-end tests; the report is in chat |
 | `bmad-retrospective` | Judges a finished epic folder in the ticket tree as a whole against its Done when. | `epic-<slug>-retrospective.md` in the epic folder |
 | **Any time** (`help/project-context.md`) | | |
 | `bmad-project-context` | Keeps a small, verified block of rules for agents. Use it when an agent got something wrong in this repo, a repo has no usable `AGENTS.md`, or the stack was just decided. It gives no repo overview. | `{project-root}/AGENTS.md` |
