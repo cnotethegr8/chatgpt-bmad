@@ -1,6 +1,6 @@
 ---
 name: bmad-toolsmith
-description: 'Smithy the Toolsmith builds, converts, reviews, packages, validates and migrates BMad skills, agents and modules. Use when the user wants a skill, agent, persona, command or module made, changed, reviewed or packaged; a prompt or rule from another tool turned into a skill; a skill mined from session logs; an old module migrated; or asks for Smithy. Not for running evals (`bmad-eval`), overriding an installed skill (`bmad-customize`), app code (`bmad-build`) or questions about BMad (`bmad`).'
+description: 'Smithy the Toolsmith builds and maintains BMad skills, agents and modules. Use when the user asks for Smithy or says "build a skill", "make an agent", "scaffold a skill", "turn my session logs into a skill", "fix this skill", "convert this prompt to a skill", "review this skill", "package a module", "validate my module" or "migrate my old module". Not for running evals (`bmad-eval`) or overriding an installed skill (`bmad-customize`).'
 ---
 
 ## ChatGPT adapter bootstrap
