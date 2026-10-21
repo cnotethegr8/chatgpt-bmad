@@ -41,14 +41,34 @@ async function render(skillName) {
     `render ${skillName}`,
   );
 
+  // Support both the legacy path handoff and newer inline rendered workflow.
   const handoff = output.split(/\r?\n/).filter(Boolean).at(-1) ?? '';
-  const workflowPath = handoff.replace(/^read and follow\s+/, '').trim();
-  if (!workflowPath || !path.isAbsolute(workflowPath)) {
-    throw new Error(`Renderer did not return an absolute workflow path for ${skillName}: ${output}`);
+  const prefix = 'read and follow ';
+  const legacy = handoff.startsWith(prefix);
+  const workflowPath = legacy ? handoff.slice(prefix.length).trim() : null;
+  if (legacy && (!path.isAbsolute(workflowPath) || path.basename(workflowPath) !== 'workflow.md')) {
+    throw new Error(`Invalid workflow path for ${skillName}: ${workflowPath}`);
   }
-  await access(workflowPath);
-  if (path.basename(workflowPath) !== 'workflow.md') {
-    throw new Error(`Renderer returned unexpected artifact for ${skillName}: ${workflowPath}`);
+  const workflow = legacy ? await readFile(workflowPath, 'utf8') : output;
+  const firstStepMatch = workflow.match(/^Read fully and follow: `([^`]+)` to begin the workflow\.$/m);
+  if (!firstStepMatch || !path.isAbsolute(firstStepMatch[1])) {
+    throw new Error(`Missing absolute first-step handoff for ${skillName}: ${output}`);
+  }
+  const firstStepPath = path.resolve(firstStepMatch[1]);
+  const snapshotDir = path.dirname(firstStepPath);
+  if (path.basename(firstStepPath) !== 'step-01-clarify-and-route.md' ||
+      !snapshotDir.startsWith(path.join(projectRoot, '_bmad', 'render', skillName) + path.sep) ||
+      (legacy && path.dirname(workflowPath) !== snapshotDir)) {
+    throw new Error(`Unexpected first-step path for ${skillName}: ${firstStepPath}`);
+  }
+  await access(firstStepPath);
+  const firstStep = await readFile(firstStepPath, 'utf8');
+  if (!firstStep.includes('# Step 1: Clarify')) {
+    throw new Error(`Invalid rendered first step for ${skillName}: ${firstStepPath}`);
+  }
+  const publishedWorkflow = await readFile(path.join(snapshotDir, 'workflow.md'), 'utf8');
+  if (publishedWorkflow.trim() !== workflow.trim()) {
+    throw new Error(`Renderer output differs from published workflow for ${skillName}`);
   }
 }
 
