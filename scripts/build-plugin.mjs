@@ -1,6 +1,7 @@
 import { cp, mkdir, readFile, rm, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { discoverUpstreamLayout } from './upstream-layout.mjs';
+import { repairSkillFrontmatter } from './skill-frontmatter.mjs';
 
 const upstreamRoot = process.argv[2] ?? '.tmp/bmad';
 const pluginRoot = path.join('plugins', 'bmad-method');
@@ -48,7 +49,7 @@ for (const relativeSkill of upstreamLayout.skillPaths) {
   await cp(source, dest, { recursive: true });
 
   const originalSkill = await readFile(path.join(dest, 'SKILL.md'), 'utf8');
-  await writeFile(path.join(dest, 'SKILL.md'), injectBootstrap(originalSkill));
+  await writeFile(path.join(dest, 'SKILL.md'), injectBootstrap(repairSkillFrontmatter(originalSkill, name)));
 
   const scriptsDir = path.join(dest, 'scripts');
   await mkdir(scriptsDir, { recursive: true });

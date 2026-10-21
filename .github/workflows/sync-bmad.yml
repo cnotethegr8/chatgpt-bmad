@@ -121,6 +121,7 @@ jobs:
           set -o pipefail
           : > .tmp/compat/validate_plugin.log
           node scripts/simulate-compatibility-failure.mjs --stage validate_plugin --log .tmp/compat/validate_plugin.log
+          node --test scripts/skill-frontmatter.test.mjs 2>&1 | tee -a .tmp/compat/validate_plugin.log
           node scripts/validate-plugin.mjs 2>&1 | tee -a .tmp/compat/validate_plugin.log
 
       - name: Runtime integration smoke

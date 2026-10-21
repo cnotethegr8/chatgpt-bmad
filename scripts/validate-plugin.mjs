@@ -1,5 +1,6 @@
 import { access, readFile } from 'node:fs/promises';
 import path from 'node:path';
+import { validateSkillFrontmatter } from './skill-frontmatter.mjs';
 
 const marketplace = JSON.parse(await readFile('.agents/plugins/marketplace.json', 'utf8'));
 const pluginEntry = marketplace.plugins?.[0];
@@ -34,6 +35,7 @@ for (const name of dirs) {
   seen.add(name);
   const root = path.join(skillsRoot, name);
   const skill = await readFile(path.join(root, 'SKILL.md'), 'utf8');
+  validateSkillFrontmatter(skill, name);
   if (!skill.includes('## ChatGPT adapter bootstrap')) throw new Error(`Missing bootstrap instructions: ${name}`);
   await access(path.join(root, 'scripts', 'chatgpt_bootstrap.py'));
   await access(path.join(root, 'agents', 'openai.yaml'));
