@@ -1,0 +1,24 @@
+name: Verify BMAD pull request
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - uses: astral-sh/setup-uv@v6
+      - name: Unit tests
+        run: node --test scripts/*.test.mjs
+      - name: Validate marketplace distribution
+        run: npm run check
+      - name: Verify existing workflow runtime
+        run: npm run integration
