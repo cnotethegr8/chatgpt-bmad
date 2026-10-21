@@ -41,7 +41,7 @@ async function render(skillName) {
     `render ${skillName}`,
   );
 
-  const handoff = output.split(/\\r?\\n/).filter(Boolean).at(-1) ?? '';
+  const handoff = output.split(/\r?\n/).filter(Boolean).at(-1) ?? '';
   const prefix = 'read and follow ';
   if (!handoff.startsWith(prefix)) {
     throw new Error(`Renderer did not return a workflow handoff for ${skillName}: ${output}`);
@@ -52,7 +52,7 @@ async function render(skillName) {
   }
   await access(workflowPath);
   const workflow = await readFile(workflowPath, 'utf8');
-  const firstStepMatch = workflow.match(/^Read fully and follow: \`([^\`]+)\` to begin the workflow\\.$/m);
+  const firstStepMatch = workflow.match(/^Read fully and follow: `([^`]+)` to begin the workflow\.$/m);
   if (!firstStepMatch || !path.isAbsolute(firstStepMatch[1])) {
     throw new Error(`Rendered workflow has no absolute first-step handoff for ${skillName}: ${workflowPath}`);
   }
