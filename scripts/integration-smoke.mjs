@@ -41,14 +41,30 @@ async function render(skillName) {
     `render ${skillName}`,
   );
 
-  const handoff = output.split(/\r?\n/).filter(Boolean).at(-1) ?? '';
-  const workflowPath = handoff.replace(/^read and follow\s+/, '').trim();
-  if (!workflowPath || !path.isAbsolute(workflowPath)) {
-    throw new Error(`Renderer did not return an absolute workflow path for ${skillName}: ${output}`);
+  const handoff = output.split(/\\r?\\n/).filter(Boolean).at(-1) ?? '';
+  const prefix = 'read and follow ';
+  if (!handoff.startsWith(prefix)) {
+    throw new Error(`Renderer did not return a workflow handoff for ${skillName}: ${output}`);
+  }
+  const workflowPath = handoff.slice(prefix.length).trim();
+  if (!path.isAbsolute(workflowPath) || path.basename(workflowPath) !== 'workflow.md') {
+    throw new Error(`Renderer returned an invalid workflow path for ${skillName}: ${workflowPath}`);
   }
   await access(workflowPath);
-  if (path.basename(workflowPath) !== 'workflow.md') {
-    throw new Error(`Renderer returned unexpected artifact for ${skillName}: ${workflowPath}`);
+  const workflow = await readFile(workflowPath, 'utf8');
+  const firstStepMatch = workflow.match(/^Read fully and follow: \`([^\`]+)\` to begin the workflow\\.$/m);
+  if (!firstStepMatch || !path.isAbsolute(firstStepMatch[1])) {
+    throw new Error(`Rendered workflow has no absolute first-step handoff for ${skillName}: ${workflowPath}`);
+  }
+  const firstStepPath = path.resolve(firstStepMatch[1]);
+  if (!firstStepPath.startsWith(path.dirname(workflowPath) + path.sep) ||
+      path.basename(firstStepPath) !== 'step-01-clarify-and-route.md') {
+    throw new Error(`Rendered workflow has an unexpected first-step path for ${skillName}: ${firstStepPath}`);
+  }
+  await access(firstStepPath);
+  const firstStep = await readFile(firstStepPath, 'utf8');
+  if (!firstStep.includes('# Step 1: Clarify')) {
+    throw new Error(`Rendered first step is invalid for ${skillName}: ${firstStepPath}`);
   }
 }
 
