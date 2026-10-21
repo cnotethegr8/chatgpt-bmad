@@ -41,30 +41,34 @@ async function render(skillName) {
     `render ${skillName}`,
   );
 
+  // Support both the legacy path handoff and newer inline rendered workflow.
   const handoff = output.split(/\r?\n/).filter(Boolean).at(-1) ?? '';
   const prefix = 'read and follow ';
-  if (!handoff.startsWith(prefix)) {
-    throw new Error(`Renderer did not return a workflow handoff for ${skillName}: ${output}`);
+  const legacy = handoff.startsWith(prefix);
+  const workflowPath = legacy ? handoff.slice(prefix.length).trim() : null;
+  if (legacy && (!path.isAbsolute(workflowPath) || path.basename(workflowPath) !== 'workflow.md')) {
+    throw new Error(`Invalid workflow path for ${skillName}: ${workflowPath}`);
   }
-  const workflowPath = handoff.slice(prefix.length).trim();
-  if (!path.isAbsolute(workflowPath) || path.basename(workflowPath) !== 'workflow.md') {
-    throw new Error(`Renderer returned an invalid workflow path for ${skillName}: ${workflowPath}`);
-  }
-  await access(workflowPath);
-  const workflow = await readFile(workflowPath, 'utf8');
+  const workflow = legacy ? await readFile(workflowPath, 'utf8') : output;
   const firstStepMatch = workflow.match(/^Read fully and follow: `([^`]+)` to begin the workflow\.$/m);
   if (!firstStepMatch || !path.isAbsolute(firstStepMatch[1])) {
-    throw new Error(`Rendered workflow has no absolute first-step handoff for ${skillName}: ${workflowPath}`);
+    throw new Error(`Missing absolute first-step handoff for ${skillName}: ${output}`);
   }
   const firstStepPath = path.resolve(firstStepMatch[1]);
-  if (!firstStepPath.startsWith(path.dirname(workflowPath) + path.sep) ||
-      path.basename(firstStepPath) !== 'step-01-clarify-and-route.md') {
-    throw new Error(`Rendered workflow has an unexpected first-step path for ${skillName}: ${firstStepPath}`);
+  const snapshotDir = path.dirname(firstStepPath);
+  if (path.basename(firstStepPath) !== 'step-01-clarify-and-route.md' ||
+      !snapshotDir.startsWith(path.join(projectRoot, '_bmad', 'render', skillName) + path.sep) ||
+      (legacy && path.dirname(workflowPath) !== snapshotDir)) {
+    throw new Error(`Unexpected first-step path for ${skillName}: ${firstStepPath}`);
   }
   await access(firstStepPath);
   const firstStep = await readFile(firstStepPath, 'utf8');
   if (!firstStep.includes('# Step 1: Clarify')) {
-    throw new Error(`Rendered first step is invalid for ${skillName}: ${firstStepPath}`);
+    throw new Error(`Invalid rendered first step for ${skillName}: ${firstStepPath}`);
+  }
+  const publishedWorkflow = await readFile(path.join(snapshotDir, 'workflow.md'), 'utf8');
+  if (publishedWorkflow.trim() !== workflow.trim()) {
+    throw new Error(`Renderer output differs from published workflow for ${skillName}`);
   }
 }
 
