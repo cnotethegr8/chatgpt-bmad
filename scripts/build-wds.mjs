@@ -1,7 +1,7 @@
 import { access, cp, mkdir, readFile, readdir, rm, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { execFileSync } from 'node:child_process';
-import { repairSkillFrontmatter } from './skill-frontmatter.mjs';
+
 
 const upstream = path.resolve(process.argv[2] || '.tmp/wds');
 const root = path.join('plugins', 'wds');
@@ -41,7 +41,14 @@ for (const group of ['agents', 'workflows']) {
     const dest = path.join(root, 'skills', name);
     await cp(src, dest, { recursive: true });
     const original = await readFile(path.join(dest, 'SKILL.md'), 'utf8');
-    const safe = repairSkillFrontmatter(original, name);
+    // Upstream WDS uses additional frontmatter metadata; normalize it for ChatGPT Skills.
+    const match = original.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n/);
+    if (!match) throw new Error('Missing upstream skill frontmatter in ' + name);
+    const upstreamDescription = match[1].split(/\r?\n/).find(line => line.startsWith('description: '))?.slice(13).replace(/^["']|["']$/g, '') || name;
+    const description = name === 'wds-agent-freya-ux'
+      ? 'Use Freya for WDS UX scenarios, wireframes, page specifications, prototypes, visual design, and design systems.'
+      : 'Use Whiteport Design Studio (WDS) for ' + upstreamDescription;
+    const safe = '---\nname: ' + name + '\ndescription: ' + JSON.stringify(description) + '\n---\n' + original.slice(match[0].length);
     const frontEnd = safe.indexOf('\n---\n', 4);
     if (frontEnd < 0) throw new Error('Missing frontmatter boundary in ' + name);
     const insertion = `
