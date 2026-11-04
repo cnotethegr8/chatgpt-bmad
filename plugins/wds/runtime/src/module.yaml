@@ -1,0 +1,173 @@
+code: wds
+name: "WDS: Whiteport Design Studio"
+header: "Whiteport Design Studio for Professional UX Design processes"
+subheader: "Configure the settings for the WDS design-first methodology"
+description: ""
+default_selected: false
+recommendedModules: [bmm]
+requiredModules: [core]
+
+# Core config values automatically inherited:
+## user_name
+## communication_language
+## document_output_language
+## output_folder
+## bmad_folder
+## install_user_docs
+## kb_install
+## project_knowledge
+
+project_knowledge:
+  prompt: "Where should long-term project knowledge be stored? (docs, research, references)"
+  default: "docs"
+  result: "{project-root}/{value}"
+
+project_type:
+  prompt: "What type of project are you working on?"
+  default: "digital_product"
+  result: "{value}"
+  single-select:
+    - value: "digital_product"
+      label: "Digital Product - Web/mobile application or platform"
+    - value: "landing_page"
+      label: "Landing Page - Marketing or campaign page"
+    - value: "website"
+      label: "Website - Multi-page website or portal"
+    - value: "other"
+      label: "Other - Custom or specialized project"
+
+design_artifacts:
+  prompt: "Where should design system output be created? (Trigger Map, Scenarios, Testing, etc...)"
+  default: "design-artifacts"
+  result: "{project-root}/{value}"
+
+design_system_mode:
+  prompt: "How will you manage design system components?"
+  default: "none"
+  result: "{value}"
+  single-select:
+    - value: "none"
+      label: "1. None - Ad-hoc styling, no reusable components"
+    - value: "building"
+      label: "2. Building - Design system grows organically from your design work"
+    - value: "component_library"
+      label: "3. Component Library - Use shadcn/Radix/MUI + apply your branding"
+    - value: "existing"
+      label: "4. Existing - Import your design system from previous projects"
+
+methodology_version:
+  prompt: "Which WDS methodology version would you like to use?"
+  default: "wds-v6"
+  result: "{value}"
+  single-select:
+    - value: "wds-v6"
+      label: "WDS v6 (Recommended) - Modern numbered phases (1-8)"
+    - value: "wps2c-v4"
+      label: "WPS2C v4 (Legacy) - Letter-based phases (A-G)"
+    - value: "custom"
+      label: "Custom - Define your own methodology"
+
+product_languages:
+  prompt: "Which languages will your product support? (Select all that apply)"
+  default: ["en"]
+  required: true
+  result: "{value}"
+  multi-select:
+    - value: "en"
+      label: "English"
+    - value: "sv"
+      label: "Swedish"
+    - value: "no"
+      label: "Norwegian"
+    - value: "da"
+      label: "Danish"
+    - value: "fi"
+      label: "Finnish"
+    - value: "de"
+      label: "German"
+    - value: "es"
+      label: "Spanish"
+    - value: "fr"
+      label: "French"
+    - value: "it"
+      label: "Italian"
+    - value: "pt"
+      label: "Portuguese"
+    - value: "nl"
+      label: "Dutch"
+    - value: "pl"
+      label: "Polish"
+    - value: "ru"
+      label: "Russian"
+    - value: "ja"
+      label: "Japanese"
+    - value: "zh"
+      label: "Chinese"
+    - value: "ko"
+      label: "Korean"
+    - value: "ar"
+      label: "Arabic"
+    - value: "other"
+      label: "Other"
+
+design_experience:
+  prompt: "What is your design experience level?"
+  default: "intermediate"
+  result: "{value}"
+  single-select:
+    - value: "beginner"
+      label: "Beginner - New to UX design, provide detailed guidance"
+    - value: "intermediate"
+      label: "Intermediate - Familiar with design concepts, balanced approach"
+    - value: "expert"
+      label: "Expert - Experienced designer, be direct and efficient"
+
+# Directories to create during installation (declarative, no code execution)
+directories:
+  - "{design_artifacts}"
+  - "{project_knowledge}"
+
+# Agent roster — essence only. External skills (party-mode, retrospective,
+# advanced-elicitation, help catalog) read these descriptors to route, display,
+# and embody agents. Full persona and behavior live in each agent's
+# customize.toml. `team` controls which named team(s) an agent belongs to;
+# users can add their own agents (real or fictional) via
+# _bmad/custom/config.toml or _bmad/custom/config.user.toml.
+agents:
+  - code: wds-agent-freya-ux
+    name: Freya
+    title: WDS Designer
+    icon: "🎨"
+    team: ux-design
+    description: "Norse goddess of beauty, magic, and strategy, thinks WITH you not FOR you, starts with WHY before HOW — design without strategy is decoration, creates artifacts developers can trust: detailed specs, prototypes, and design systems. Speaks as a creative collaborator with strategic depth — asks WHY? before WHAT?, explores one challenge deeply rather than skimming many, leads with decisions and follows with rationale."
+
+  - code: wds-agent-saga-analyst
+    name: Saga
+    title: WDS Analyst
+    icon: "📚"
+    team: ux-design
+    description: "Goddess of stories and wisdom, treats analysis like a treasure hunt — excited by clues, thrilled by patterns, builds understanding through conversation not interrogation, creates the North Star documents (Product Brief + Trigger Map). Asks questions that spark aha! moments while structuring insights with precision — listens deeply, reflects back naturally, confirms understanding before moving forward."
+
+  - code: wds-agent-mimir-builder
+    name: Mimir
+    title: WDS Builder
+    icon: "🔨"
+    team: ux-design
+    description: "God of wisdom and deep knowledge — the well beneath the world tree. Implementation agent who owns the tech audit, the PRD, and the build loop. Methodical, precise, empirical. Reads Freya's Work Orders, writes formal requirements, and implements them one atomic verified task at a time. Reads the spec completely before writing a line of code. Plans before acting. Verifies before moving on."
+
+# WDS folder structure to create within design_artifacts directory
+wds_folders:
+  - A-Product-Brief
+  - B-Trigger-Map
+  - C-UX-Scenarios
+  - D-Design-System
+  - E-Development
+
+post-install-notes: |
+  Thank you for choosing to install the Whiteport Design System,
+  A design-first methodology for creating software that people love!
+
+  For Support and UX community, https://discord.com/channels/1377115244018532404/1451339058218405919
+  Github Issues, PRs: https://github.com/bmad-code-org/bmad-method-wds-expansion/issues
+
+  License: MIT

@@ -1,0 +1,3 @@
+interface:
+  display_name: "WDS 0 Project Setup"
+  short_description: "WDS agent or workflow: wds-0-project-setup"
