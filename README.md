@@ -55,6 +55,12 @@ For example:
 
 You can also explicitly ask ChatGPT to use a particular BMAD workflow or agent when you want more control.
 
+### Additional WDS plugin
+
+This marketplace also offers **WDS — Whiteport Design Studio** as a second, separately installable plugin. It includes Freya (UX), Saga (analysis), Mimir (development), and the complete WDS workflow library. Install **BMAD Method** as well: WDS is an extension of BMAD's methodology and may use BMAD shared/core utilities.
+
+The WDS distribution is generated from [bmad-method-wds-expansion](https://github.com/bmad-code-org/bmad-method-wds-expansion) with its own sync and validation. BMAD and WDS are isolated plugins with separate upstreams and synchronization.
+
 ### Updates
 
 GitHub-imported marketplaces are synchronized automatically by ChatGPT each day.
@@ -114,6 +120,15 @@ Clone this repository:
 ```bash
 git clone https://github.com/cnotethegr8/chatgpt-bmad.git
 cd chatgpt-bmad
+```
+
+### Regenerate WDS independently
+
+```bash
+git clone --depth 1 https://github.com/bmad-code-org/bmad-method-wds-expansion.git .tmp/wds
+npm run build:wds -- .tmp/wds
+npm run check
+npm run integration:wds
 ```
 
 ### Regenerate the full distribution

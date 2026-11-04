@@ -1,0 +1,51 @@
+name: Sync WDS
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '47 4 * * *'
+  push:
+    branches: [main, feat/add-wds-skill-library]
+    paths:
+      - 'scripts/build-wds.mjs'
+      - 'scripts/validate-wds.mjs'
+      - 'scripts/integration-wds.mjs'
+      - '.github/workflows/sync-wds.yml'
+      - 'package.json'
+permissions:
+  contents: write
+concurrency:
+  group: wds-sync-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - uses: astral-sh/setup-uv@v6
+      - name: Clone official WDS
+        run: git clone --depth 1 https://github.com/bmad-code-org/bmad-method-wds-expansion.git .tmp/wds
+      - name: Build WDS plugin
+        run: npm run build:wds -- .tmp/wds
+      - name: Verify marketplace and both plugins
+        run: npm run check
+      - name: Verify WDS and existing BMAD runtime
+        run: |
+          npm run integration:wds
+          npm run integration
+      - name: Publish generated WDS plugin
+        shell: bash
+        run: |
+          git add plugins/wds
+          if git diff --cached --quiet; then
+            echo "WDS plugin already current."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "chore: sync WDS plugin from upstream"
+          git push origin "HEAD:${GITHUB_REF_NAME}"
