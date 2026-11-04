@@ -1,0 +1,36 @@
+{
+  "name": "wds",
+  "version": "0.4.3",
+  "description": "Whiteport Design Studio",
+  "author": {
+    "name": "Whiteport Collective / BMad Code"
+  },
+  "homepage": "https://github.com/bmad-code-org/bmad-method-wds-expansion",
+  "repository": "https://github.com/cnotethegr8/chatgpt-bmad",
+  "license": "MIT",
+  "keywords": [
+    "wds",
+    "bmad",
+    "ux",
+    "wireframes",
+    "design-systems"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "WDS — Whiteport Design Studio",
+    "shortDescription": "UX scenarios, wireframes, specifications, and design systems with Freya",
+    "longDescription": "Whiteport Design Studio provides Freya, Saga, Mimir, and its complete WDS design and development workflow library.",
+    "developerName": "Whiteport Collective / chatgpt-bmad",
+    "category": "Developer Tools",
+    "capabilities": [
+      "Interactive",
+      "Write"
+    ],
+    "websiteURL": "https://github.com/bmad-code-org/bmad-method-wds-expansion",
+    "defaultPrompt": [
+      "Use Freya from WDS to design the UX for this feature.",
+      "Use WDS to create UX scenarios and a design system.",
+      "Review this UX specification using WDS."
+    ]
+  }
+}

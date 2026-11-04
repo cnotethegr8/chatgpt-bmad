@@ -6,13 +6,15 @@
   "scripts": {
     "sync": "node scripts/sync-bmad.mjs",
     "build": "node scripts/build-plugin.mjs",
-    "check": "node scripts/validate-manifest.mjs && node scripts/validate-plugin.mjs",
+    "check": "node scripts/validate-manifest.mjs && node scripts/validate-plugin.mjs && node scripts/validate-wds.mjs",
     "integration": "node scripts/integration-smoke.mjs",
     "regenerate": "npm run test:regenerate && node scripts/regenerate.mjs",
     "test:regenerate": "node --test scripts/regenerate.test.mjs",
     "test:compat": "node --test scripts/compatibility-incident.test.mjs",
     "test:layout": "node --test scripts/upstream-layout.test.mjs",
-    "test:sync": "node --test scripts/sync-bmad.test.mjs"
+    "test:sync": "node --test scripts/sync-bmad.test.mjs",
+    "build:wds": "node scripts/build-wds.mjs",
+    "integration:wds": "node scripts/integration-wds.mjs"
   },
   "engines": {
     "node": ">=20"

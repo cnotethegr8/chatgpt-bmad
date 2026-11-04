@@ -104,7 +104,7 @@ const marketplace = {
       authentication: 'ON_INSTALL'
     },
     category: 'Developer Tools'
-  }]
+  }, ...((await readFile(path.join('.agents', 'plugins', 'marketplace.json'), 'utf8').then(JSON.parse).catch(() => ({ plugins: [] }))).plugins ?? []).filter((entry) => entry.name !== 'bmad-method')]
 };
 await writeFile(path.join('.agents', 'plugins', 'marketplace.json'), `${JSON.stringify(marketplace, null, 2)}\n`);
 await writeFile(path.join(pluginRoot, 'UPSTREAM.json'), `${JSON.stringify({ name: upstreamLayout.marketplace?.name ?? 'bmad-method', version: upstreamLayout.version, skillCount: upstreamLayout.skillPaths.length }, null, 2)}\n`);

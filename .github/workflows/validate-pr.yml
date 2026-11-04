@@ -22,3 +22,5 @@ jobs:
         run: npm run check
       - name: Verify existing workflow runtime
         run: npm run integration
+      - name: Verify WDS workflow runtime
+        run: npm run integration:wds

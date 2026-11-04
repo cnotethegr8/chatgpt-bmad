@@ -1,0 +1,3 @@
+interface:
+  display_name: "WDS 3 Scenarios"
+  short_description: "WDS agent or workflow: wds-3-scenarios"

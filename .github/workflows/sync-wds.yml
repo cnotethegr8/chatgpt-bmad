@@ -1,0 +1,173 @@
+name: Sync WDS
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '47 4 * * *'
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/build-wds.mjs'
+      - 'scripts/validate-wds.mjs'
+      - 'scripts/integration-wds.mjs'
+      - 'scripts/wds-compatibility*.mjs'
+      - '.github/workflows/sync-wds.yml'
+      - 'package.json'
+
+permissions:
+  contents: write
+  issues: write
+
+concurrency:
+  group: wds-sync-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - uses: astral-sh/setup-uv@v6
+
+      - name: Record last known-good WDS
+        shell: bash
+        run: |
+          mkdir -p .tmp/wds-compat
+          node - <<'NODE'
+          const fs = require('node:fs');
+          let previous = {};
+          try {
+            previous = JSON.parse(fs.readFileSync('plugins/wds/UPSTREAM.json', 'utf8'));
+          } catch {}
+          fs.writeFileSync('.tmp/wds-compat/previous-good.json',
+            JSON.stringify({ version: previous.version || null, sha: previous.sha || null }));
+          NODE
+
+      - name: Clone official WDS
+        id: upstream_clone
+        continue-on-error: true
+        shell: bash
+        run: |
+          set -o pipefail
+          git clone --depth 1 https://github.com/bmad-code-org/bmad-method-wds-expansion.git .tmp/wds 2>&1 | tee .tmp/wds-compat/upstream_clone.log
+
+      - name: Capture upstream identity
+        id: upstream_identity
+        if: steps.upstream_clone.outcome == 'success'
+        continue-on-error: true
+        shell: bash
+        run: |
+          set -o pipefail
+          {
+            git -C .tmp/wds rev-parse HEAD > .tmp/wds-compat/upstream-sha
+            node -e "process.stdout.write(JSON.parse(require('node:fs').readFileSync('.tmp/wds/package.json', 'utf8')).version || 'unknown')" > .tmp/wds-compat/upstream-version
+          } 2>&1 | tee .tmp/wds-compat/upstream_identity.log
+
+      - name: Build WDS plugin
+        id: adapter_generator
+        if: steps.upstream_identity.outcome == 'success'
+        continue-on-error: true
+        shell: bash
+        run: |
+          set -o pipefail
+          npm run build:wds -- .tmp/wds 2>&1 | tee .tmp/wds-compat/adapter_generator.log
+
+      - name: Validate marketplace and both plugins
+        id: validate_plugins
+        if: steps.adapter_generator.outcome == 'success'
+        continue-on-error: true
+        shell: bash
+        run: |
+          set -o pipefail
+          {
+            npm run check
+            node --test scripts/wds-compatibility.test.mjs
+          } 2>&1 | tee .tmp/wds-compat/validate_plugins.log
+
+      - name: Verify WDS runtime
+        id: wds_integration
+        if: steps.validate_plugins.outcome == 'success'
+        continue-on-error: true
+        shell: bash
+        run: |
+          set -o pipefail
+          npm run integration:wds 2>&1 | tee .tmp/wds-compat/wds_integration.log
+
+      - name: Verify existing BMAD runtime
+        id: bmad_integration
+        if: steps.wds_integration.outcome == 'success'
+        continue-on-error: true
+        shell: bash
+        run: |
+          set -o pipefail
+          npm run integration 2>&1 | tee .tmp/wds-compat/bmad_integration.log
+
+      - name: Publish generated WDS plugin
+        id: publish
+        if: steps.bmad_integration.outcome == 'success'
+        continue-on-error: true
+        shell: bash
+        run: |
+          set -o pipefail
+          {
+            git add plugins/wds
+            if git diff --cached --quiet; then
+              echo "WDS plugin already current."
+            else
+              git config user.name "github-actions[bot]"
+              git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+              git commit -m "chore: sync WDS plugin from upstream"
+              git push origin "HEAD:$GITHUB_REF_NAME"
+            fi
+          } 2>&1 | tee .tmp/wds-compat/publish.log
+
+      - name: Report WDS compatibility failure
+        if: >-
+          always() && github.ref == 'refs/heads/main' && (
+            steps.upstream_clone.outcome == 'failure' ||
+            steps.upstream_identity.outcome == 'failure' ||
+            steps.adapter_generator.outcome == 'failure' ||
+            steps.validate_plugins.outcome == 'failure' ||
+            steps.wds_integration.outcome == 'failure' ||
+            steps.bmad_integration.outcome == 'failure' ||
+            steps.publish.outcome == 'failure'
+          )
+        shell: bash
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          if [[ "${{ steps.upstream_clone.outcome }}" == "failure" ]]; then stage=upstream_clone
+          elif [[ "${{ steps.upstream_identity.outcome }}" == "failure" ]]; then stage=upstream_identity
+          elif [[ "${{ steps.adapter_generator.outcome }}" == "failure" ]]; then stage=adapter_generator
+          elif [[ "${{ steps.validate_plugins.outcome }}" == "failure" ]]; then stage=validate_plugins
+          elif [[ "${{ steps.wds_integration.outcome }}" == "failure" ]]; then stage=wds_integration
+          elif [[ "${{ steps.bmad_integration.outcome }}" == "failure" ]]; then stage=bmad_integration
+          else stage=publish
+          fi
+          node scripts/wds-compatibility-github.mjs report --stage "$stage" --log ".tmp/wds-compat/$stage.log"
+
+      - name: Fail on incompatible WDS
+        if: >-
+          always() && (
+            steps.upstream_clone.outcome == 'failure' ||
+            steps.upstream_identity.outcome == 'failure' ||
+            steps.adapter_generator.outcome == 'failure' ||
+            steps.validate_plugins.outcome == 'failure' ||
+            steps.wds_integration.outcome == 'failure' ||
+            steps.bmad_integration.outcome == 'failure' ||
+            steps.publish.outcome == 'failure'
+          )
+        run: exit 1
+
+      - name: Close resolved WDS compatibility issues
+        if: github.ref == 'refs/heads/main' && steps.publish.outcome == 'success'
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: node scripts/wds-compatibility-github.mjs resolve

@@ -1,0 +1,3 @@
+interface:
+  display_name: "WDS agent Saga Analyst"
+  short_description: "WDS agent or workflow: wds-agent-saga-analyst"

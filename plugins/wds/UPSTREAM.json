@@ -1,0 +1,21 @@
+{
+  "repository": "https://github.com/bmad-code-org/bmad-method-wds-expansion",
+  "sha": "cc16f09fcfab26d35635af1491f36a38a8431c8d",
+  "version": "0.4.3",
+  "skillCount": 13,
+  "skills": [
+    "wds-0-alignment-signoff",
+    "wds-0-project-setup",
+    "wds-1-project-brief",
+    "wds-2-trigger-mapping",
+    "wds-3-scenarios",
+    "wds-4-ux-design",
+    "wds-5-agentic-development",
+    "wds-6-asset-generation",
+    "wds-7-design-system",
+    "wds-8-product-evolution",
+    "wds-agent-freya-ux",
+    "wds-agent-mimir-builder",
+    "wds-agent-saga-analyst"
+  ]
+}

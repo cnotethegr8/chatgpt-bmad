@@ -1,0 +1,3 @@
+interface:
+  display_name: "WDS 2 Trigger Mapping"
+  short_description: "WDS agent or workflow: wds-2-trigger-mapping"

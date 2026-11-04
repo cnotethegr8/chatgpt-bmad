@@ -1,0 +1,3 @@
+interface:
+  display_name: "WDS 0 Alignment Signoff"
+  short_description: "WDS agent or workflow: wds-0-alignment-signoff"

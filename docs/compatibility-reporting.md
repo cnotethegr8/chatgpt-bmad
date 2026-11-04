@@ -77,3 +77,24 @@ npm run integration
 ```
 
 `test:compat` covers failure classification, runtime target extraction, dedupe markers, redaction, and diagnostic truncation. The existing `check` and `integration` commands remain the publication compatibility gates.
+
+## Whiteport Design Studio (WDS) compatibility incidents
+
+The second marketplace plugin has independent daily synchronization and incident handling in `.github/workflows/sync-wds.yml`.
+
+- `scripts/wds-compatibility.mjs` classifies failures, creates WDS-specific deterministic markers, and manages issues.
+- `scripts/wds-compatibility-github.mjs` reports or closes WDS incidents through the GitHub API.
+- `scripts/wds-compatibility.test.mjs` tests classification, redaction, deduplication, and safe closure.
+- WDS issues use `[WDS compatibility]` in the title and `chatgpt-wds-compat:` in a hidden marker. They cannot collide with or close BMAD issues.
+- Failure stages include upstream clone, identity extraction, generation, marketplace validation, WDS runtime, BMAD runtime interoperability, and publication. Transient infrastructure errors fail the workflow without opening a compatibility issue.
+- A repeated failure for the same upstream SHA and category adds a comment to the existing issue. After WDS generation, both runtime checks, and publication succeed, all open machine-generated WDS incidents are commented on and closed, including incidents from older upstream SHAs.
+- Failed generation, validation, or runtime checks never overwrite the last known-good WDS distribution.
+
+Local verification:
+
+```bash
+node --test scripts/wds-compatibility.test.mjs
+npm run check
+npm run integration:wds
+npm run integration
+```
