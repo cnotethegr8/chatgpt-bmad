@@ -32,6 +32,7 @@
       "Use BMAD to take this feature from idea to implementation.",
       "Use BMAD to plan and build this issue.",
       "Review this project with BMAD and recommend the next workflow."
-    ]
+    ],
+    "icon": "https://avatars.githubusercontent.com/u/224091849?s=200&v=4"
   }
 }
