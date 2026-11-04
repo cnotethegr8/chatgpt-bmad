@@ -6,6 +6,7 @@ export const WDS_MARKER_PREFIX = '<!-- chatgpt-wds-compat:';
 
 const categories = {
   upstream_clone: 'upstream_sync',
+  upstream_identity: 'upstream_sync',
   adapter_generator: 'adapter_generator',
   validate_plugins: 'plugin_structural_validation',
   wds_integration: 'wds_runtime_integration',

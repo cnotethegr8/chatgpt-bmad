@@ -5,7 +5,7 @@ on:
   schedule:
     - cron: '47 4 * * *'
   push:
-    branches: [main, feat/add-wds-skill-library]
+    branches: [main]
     paths:
       - 'scripts/build-wds.mjs'
       - 'scripts/validate-wds.mjs'
@@ -130,7 +130,7 @@ jobs:
 
       - name: Report WDS compatibility failure
         if: >-
-          always() && (
+          always() && github.ref == 'refs/heads/main' && (
             steps.upstream_clone.outcome == 'failure' ||
             steps.upstream_identity.outcome == 'failure' ||
             steps.adapter_generator.outcome == 'failure' ||
@@ -167,7 +167,7 @@ jobs:
         run: exit 1
 
       - name: Close resolved WDS compatibility issues
-        if: steps.publish.outcome == 'success'
+        if: github.ref == 'refs/heads/main' && steps.publish.outcome == 'success'
         env:
           GITHUB_TOKEN: ${{ github.token }}
         run: node scripts/wds-compatibility-github.mjs resolve

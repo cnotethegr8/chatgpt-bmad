@@ -15,6 +15,8 @@ test('WDS clone transient failures do not open compatibility incidents', () => {
 test('classifies build and workflow failures with independent categories', () => {
   assert.equal(classifyWdsFailure('adapter_generator', 'could not read Freya source').category,
     'adapter_generator');
+  assert.equal(classifyWdsFailure('upstream_identity', 'Missing source metadata').category,
+    'upstream_sync');
   assert.equal(classifyWdsFailure('wds_integration', 'bootstrap wds-agent-freya-ux failed').affectedTarget,
     'wds-agent-freya-ux');
   assert.equal(classifyWdsFailure('bmad_integration', 'render bmad-build failed').category,
