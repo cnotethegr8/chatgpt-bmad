@@ -24,3 +24,10 @@ jobs:
         run: npm run integration
       - name: Verify WDS workflow runtime
         run: npm run integration:wds
+      - name: Verify adapter against current upstream BMAD
+        shell: bash
+        run: |
+          git clone --depth 1 https://github.com/bmad-code-org/BMAD-METHOD.git .tmp/bmad
+          npm run build -- .tmp/bmad
+          npm run check
+          npm run integration
