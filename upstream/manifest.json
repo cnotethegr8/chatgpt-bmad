@@ -1,12 +1,12 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-11-07T11:05:59.175Z",
+  "generatedAt": "2026-11-10T05:50:12.998Z",
   "upstream": {
     "repository": "bmad-code-org/BMAD-METHOD",
     "branch": "main",
-    "sha": "e734d3ac3c0f4ea31cc2c2bbbe79e86e54f2cae6",
-    "committedAt": "2026-11-06T15:45:29Z",
-    "message": "fix(tickets): read frontmatter with PyYAML instead of a hand-rolled parser (#3169)\n\nThe hand-rolled reader kept `# comment` text in bare values, so\n`status: done # merged` read as an unknown status and blocked its ticket,\nand it split inline lists on commas inside quotes.\n\n- tickets.py declares pyyaml in its PEP 723 header; every caller already\n  runs it through `uv run`.\n- FrontmatterLoader types only whole numbers, true, false and null; every\n  other scalar stays text, so `after: [1.10]` is entry 10 in epic 1 and a\n  date is the text it was written as. An absent value reads as \"\".\n- Invalid YAML is refused with the file and line.\n- Edits stay one-line replaces, checked: the frontmatter must read as\n  before with only the edited keys changed, or the edit is refused\n  unwritten with \"edit the frontmatter by hand\".\n- Reads accept block lists, so the inline-only rule and lenient mode go.\n- quoted() escapes every non-printable character.\n\nFixes #3136"
+    "sha": "a867e1604b365d48ea03cbd109da1066ba0c84bc",
+    "committedAt": "2026-11-08T03:38:56Z",
+    "message": "feat(facilitate)!: Mary and John on bmad-facilitate, paced templates, a generic engine and template customization (#3176)\n\n* feat(analyst): run the brief and PRFAQ through bmad-facilitate\n\nMary's CB, WB and BD menu items call the engine the way John's do. The brief template moves to the module's doc-templates with both agents listed, and a new prfaq template with its own rubric carries over what bmad-prfaq was for.\n\n* feat(method)!: retire bmad-prfaq, bmad-product-brief and bmad-prd\n\nMary runs the brief and the PRFAQ through bmad-facilitate and John the PRD, so the three standalone skills go. They are listed in retired.toml, and every help page and skill that named them now points at Mary or John.\n\n* docs: route the brief and PRFAQ to Mary and drop the retired skills\n\nThe planning pages, the skills reference, the templates page and the planning diagram name Mary (bmad-agent-analyst) for the PRFAQ and the brief. The customization recipes that used bmad-product-brief as their example now use bmad-facilitate and a template extension.\n\n* feat(agents)!: list documents from the templates, and replace two-letter menu codes\n\n- John's and Mary's descriptions name the agent and its role; the menu and the bmad skill list the documents.\n- Mary's skill follows John's shape. Her prfaq template and rubric move to her assets/, and she passes her own template library to bmad-facilitate.\n- John and Mary offer CREATE, UPDATE and VALIDATE, and the engine picks the template. Asked what they can do, they list the documents they write through list_templates.py, which gains an --agent filter and returns each template's agents.\n- Mary's six research items become one RESEARCH item.\n- Menu codes become words for every agent: Mary BRAINSTORM, RESEARCH, CONTEXT; Amelia BUILD, TESTS, REVIEW, RETRO; Winston ARCHITECTURE; Sally DESIGN.\n- John drops the hardcoded list of shared templates, and his trigger evals drop the brief and BRD queries.\n\nBREAKING CHANGE: an override keyed by an old menu code (CB, WB, BD, MR, DR, TR, TS, CR, UV, BP, PC, CA, CU, QA, ER) now adds an item instead of replacing the shipped one.\n\n* feat(analyst)!: give Mary the brief and the BRD\n\nThe brief and BRD templates move from the module's shared doc-templates/ to Mary's assets/, so she alone offers them. John points a brief or BRD to Mary, and his PRD or SRS still picks up a BRD's ids. bmad-ux, the core and method help, the planning docs and the planning diagram now send the brief and BRD to Mary.\n\nBREAKING CHANGE: John no longer writes the brief or the BRD, and a team copy of either template now lives under bmad-agent-analyst/assets/.\n\n* feat(facilitate)!: paced templates, facilitation order, and a generic engine\n\n- `paced: true` walks a template's sections in order, each section's comment acting as the coach's brief; the PRFAQ, brief, experiment, opportunity, pitch, postmortem and decision record are paced.\n- `facilitation_order` in the frontmatter lists sections by id in the order they come up, `?` marking those not required; every section is settled on every path, and `list_templates.py` reports ids and headings that do not match.\n- Each message opens with a progress line counted against the facilitation order.\n- HTML views for the PRFAQ, brief and pitch, rendered at close.\n- The engine no longer assumes a planning document: stakes come from the template, assumptions are logged in the memlog, and the stakes ladder, `[ASSUMPTION]` tags, ids and the level below move to `guidance-planning`, which every shipped template names through the new `guidance` key.\n\nBREAKING CHANGE: a section comment no longer marks a section required when the template sets `facilitation_order`, and templates without `guidance` get no stakes levels or body tags.\n\n* fix(facilitate): address review of the template listing and docs\n\n- A replacement template with no `agents` keeps the owner of the template it hides, so a team's copy of the brief stays on Mary's menu.\n- `list_templates.py` reports a `facilitation_order` that is not a one-line list, and pairs code fences the CommonMark way.\n- The extension example sets a facilitation order so its Compliance section is required; the replace recipe copies the brief's view and keeps its frontmatter keys; the publish example stops on a document that is not final.\n- Section ids drop punctuation, as the docs and engine now say.\n- The BRD wording keeps the regulator and contract case, and the brief is for why to build, not whether.\n\n* feat(facilitate): required extension sections, and html_view per template\n\nA section an extension adds is now required unless its comment says optional or include when, and the template listing adds it to the merged order, so an extension no longer restates the template's whole order. Extensions can set view and html_view. A template's view now names only the layout; its own html_view decides whether the view is made, replacing the team setting, and the team's never still stops every view. The four templates that set a view also set html_view: always, keeping their behavior.\n\n* feat(customize): change document templates from bmad-customize\n\nbmad-customize now handles a change to a document, such as a section the PRD must have or HTML by default, without the user knowing which skill writes it. It finds the template through the listing, writes an extension by default and a copy only to change what the template says, puts settings for every document in bmad-facilitate.toml, and verifies with the merged listing. Help routes every customization question to it.\n\n* feat(facilitate): load a template and its customizations as one merged file\n\nlist_templates.py merges a template with its extensions into {run}/.template.md (--template, --merge), customizations first, frontmatter merged and paths absolute, and the engine works only from that file. An extension's facilitation_order may leave out a template section to remove it, reported under removed, and a section with a template heading replaces it as its comment says. --brief lists only what choosing needs, --libraries-of reads a skill's template_libraries itself, and --project-root fills the placeholder, so a model cannot drop the project's folder. The engine takes a template the user names before the brain dump, and John and Mary hand off before asking about the work.\n\n* fix(facilitate): choose among templates of the named kind, and keep extension orders open\n\nA document asked for by name, such as \"a PRD\", now narrows the choice to templates of that kind, so a team's prd-billing can win over prd for billing work. bmad-customize never sets facilitation_order just to place a new section, since a restated order removes any section the template adds later, and it can copy a template under a new id as a different document for one team.\n\n* docs(customize): explain document templates and add a team customization tutorial\n\nHow Document Templates Work covers where templates come from, the merged file a run reads, and when to extend, replace or make a new template. Customize a Document for Your Team walks a fictional company through a new required section, a change to how an existing section is coached, and a separate billing PRD once the changes outgrow an extension.\n\n* fix(facilitate): write merged template paths with forward slashes\n\nOn Windows the merged frontmatter carried JSON-escaped backslashes, which a model reading .template.md had to unescape and the test did not expect.\n\n* fix(facilitate): load supplied templates through the merge, and report unreadable extension orders\n\nA template given by path or URL now goes first in the merge's sources, and a plain markdown file is copied to .template.md. An extension's facilitation_order that is not a one-line list is reported even when the base template's order wins. bmad-customize routes a document change to its template path before the directed-request shortcut, and the explanation page drops its Next Steps section."
   },
   "roots": {
     "layout": "flat",
@@ -22,7 +22,7 @@
       {
         "name": "bmad-agent-analyst",
         "path": "skills/bmad-agent-analyst",
-        "sha": "fbd7a19e70d5abd84b8ccdc755a6902a5dee3083",
+        "sha": "41ad939770a553ee3e4cb6c98e0c65b6d4c52275",
         "size": 0,
         "type": "dir",
         "downloadUrl": null
@@ -30,7 +30,7 @@
       {
         "name": "bmad-agent-architect",
         "path": "skills/bmad-agent-architect",
-        "sha": "dae03c8a1ef0f4010d58572fee2bb31bebaa7e7b",
+        "sha": "83b54e312c3e8323feca9f5664a8818a4a78da6c",
         "size": 0,
         "type": "dir",
         "downloadUrl": null
@@ -38,7 +38,7 @@
       {
         "name": "bmad-agent-dev",
         "path": "skills/bmad-agent-dev",
-        "sha": "f15ef63df66c76a2d60c11b861a3bc155fa3e24a",
+        "sha": "b7d8f5ed9eae0502be136507d6404387ef03a2bc",
         "size": 0,
         "type": "dir",
         "downloadUrl": null
@@ -46,7 +46,7 @@
       {
         "name": "bmad-agent-pm",
         "path": "skills/bmad-agent-pm",
-        "sha": "6d222b5ca3def4ce916370b6ff3a58eaa929a2af",
+        "sha": "2fa93eb91ff9c131037d30f1c1bb5f830cc8c1c3",
         "size": 0,
         "type": "dir",
         "downloadUrl": null
@@ -62,7 +62,7 @@
       {
         "name": "bmad-agent-ux-designer",
         "path": "skills/bmad-agent-ux-designer",
-        "sha": "3b8514ebcc51f868d11db5c5a9df431af3faf9b4",
+        "sha": "d9e20a2d96f62941f09e9ede6377eb632b7838ef",
         "size": 0,
         "type": "dir",
         "downloadUrl": null
@@ -78,7 +78,7 @@
       {
         "name": "bmad-brainstorming",
         "path": "skills/bmad-brainstorming",
-        "sha": "7a107d4fd1ed0547a0876a6f9d670cfc8c7fa3f7",
+        "sha": "81074e060f3845807ff6ff8c6133e3c14eaf43cc",
         "size": 0,
         "type": "dir",
         "downloadUrl": null
@@ -86,7 +86,7 @@
       {
         "name": "bmad-build-auto",
         "path": "skills/bmad-build-auto",
-        "sha": "59a8895bbf119f062470e949f0414cc445284b04",
+        "sha": "7160f613585e02d2fdd0f6847c57aabcba337c05",
         "size": 0,
         "type": "dir",
         "downloadUrl": null
@@ -94,7 +94,7 @@
       {
         "name": "bmad-build",
         "path": "skills/bmad-build",
-        "sha": "162905f5e6439eee08e3b0885bb059eae3d763e8",
+        "sha": "2e8d45a24e98aa3ee280a4f59bb5b02de6629ba0",
         "size": 0,
         "type": "dir",
         "downloadUrl": null
@@ -110,7 +110,7 @@
       {
         "name": "bmad-customize",
         "path": "skills/bmad-customize",
-        "sha": "c489e705c8950a603529548337b925f9d0e9b08b",
+        "sha": "44db49d790f9c75e4d1cd421b51a2bbf92275327",
         "size": 0,
         "type": "dir",
         "downloadUrl": null
@@ -134,7 +134,7 @@
       {
         "name": "bmad-facilitate",
         "path": "skills/bmad-facilitate",
-        "sha": "53104f4b087e1f9f5b92245f168217c1688d175b",
+        "sha": "39554029e91bf11dfc8e304383100f9c4914c022",
         "size": 0,
         "type": "dir",
         "downloadUrl": null
@@ -142,7 +142,7 @@
       {
         "name": "bmad-forge-idea",
         "path": "skills/bmad-forge-idea",
-        "sha": "2b6b8cca561c5562a109ad5e9af50670384edfb0",
+        "sha": "a364d023277f9156bedc3286b55338d4531796ee",
         "size": 0,
         "type": "dir",
         "downloadUrl": null
@@ -159,30 +159,6 @@
         "name": "bmad-party-mode",
         "path": "skills/bmad-party-mode",
         "sha": "00a7972670d73ecbfa73512a49939904219c3326",
-        "size": 0,
-        "type": "dir",
-        "downloadUrl": null
-      },
-      {
-        "name": "bmad-prd",
-        "path": "skills/bmad-prd",
-        "sha": "d274cd6da9384b8341d856713077a32b6dff313d",
-        "size": 0,
-        "type": "dir",
-        "downloadUrl": null
-      },
-      {
-        "name": "bmad-prfaq",
-        "path": "skills/bmad-prfaq",
-        "sha": "779d60dbb0618d4e6ee97e0e5c41813b59dd41f0",
-        "size": 0,
-        "type": "dir",
-        "downloadUrl": null
-      },
-      {
-        "name": "bmad-product-brief",
-        "path": "skills/bmad-product-brief",
-        "sha": "ba9a3de54b4e869b6c883d3a85cc7988bffc4dea",
         "size": 0,
         "type": "dir",
         "downloadUrl": null
@@ -222,7 +198,7 @@
       {
         "name": "bmad-shard-pro",
         "path": "skills/bmad-shard-pro",
-        "sha": "27290f5fcd9d6841c01c17344fcb07505e5c2568",
+        "sha": "e9f9b90666d02889284ce85b6e2a37d43151d54f",
         "size": 0,
         "type": "dir",
         "downloadUrl": null
@@ -238,7 +214,7 @@
       {
         "name": "bmad-ux",
         "path": "skills/bmad-ux",
-        "sha": "68f6ba97f74b92ad56b9e873997a9db8bab6c498",
+        "sha": "bf9b395e417622f135ef2080b619bd8541844031",
         "size": 0,
         "type": "dir",
         "downloadUrl": null
@@ -254,7 +230,7 @@
       {
         "name": "bmad",
         "path": "skills/bmad",
-        "sha": "bfeade40696bb807fa7b244e1c69a5e7aa3a22c4",
+        "sha": "4644da9114e79afdaebb07c20722d28c517ffce7",
         "size": 0,
         "type": "dir",
         "downloadUrl": null
@@ -262,7 +238,7 @@
       {
         "name": "bmod-core-tools",
         "path": "skills/bmod-core-tools",
-        "sha": "8e7851e607f162d8c5659fc8d6fb42a79ef54bf8",
+        "sha": "5d25c7d8f96f9dc14c04c19ab42fd309f4f5d247",
         "size": 0,
         "type": "dir",
         "downloadUrl": null
@@ -270,7 +246,7 @@
       {
         "name": "bmod-founder",
         "path": "skills/bmod-founder",
-        "sha": "b8a1d2cc251856ae5f7858c9855e1536ac6d8651",
+        "sha": "19085124d4526802a7456d2d44bc3fef45aebc24",
         "size": 0,
         "type": "dir",
         "downloadUrl": null
@@ -278,7 +254,7 @@
       {
         "name": "bmod-method",
         "path": "skills/bmod-method",
-        "sha": "3f8422170614969ce96ec909e4ecb2f47c140b83",
+        "sha": "ccd9dcab57d06903ad695ef55113db0dbd36976e",
         "size": 0,
         "type": "dir",
         "downloadUrl": null
@@ -299,7 +275,7 @@
         "sha": "55cefc220face9c85c452c9883b0fca7f9accb5e",
         "size": 4096,
         "type": "file",
-        "downloadUrl": "https://raw.githubusercontent.com/bmad-code-org/BMAD-METHOD/e734d3ac3c0f4ea31cc2c2bbbe79e86e54f2cae6/skills/bmad/scripts/config_utils.py"
+        "downloadUrl": "https://raw.githubusercontent.com/bmad-code-org/BMAD-METHOD/a867e1604b365d48ea03cbd109da1066ba0c84bc/skills/bmad/scripts/config_utils.py"
       },
       {
         "name": "knowledge.py",
@@ -307,15 +283,15 @@
         "sha": "e57b2cdf0958ad434fcb9fe5a7c6c317397f69a8",
         "size": 21558,
         "type": "file",
-        "downloadUrl": "https://raw.githubusercontent.com/bmad-code-org/BMAD-METHOD/e734d3ac3c0f4ea31cc2c2bbbe79e86e54f2cae6/skills/bmad/scripts/knowledge.py"
+        "downloadUrl": "https://raw.githubusercontent.com/bmad-code-org/BMAD-METHOD/a867e1604b365d48ea03cbd109da1066ba0c84bc/skills/bmad/scripts/knowledge.py"
       },
       {
         "name": "list_templates.py",
         "path": "skills/bmad/scripts/list_templates.py",
-        "sha": "75ee4d9de86e8272e8b8bcdab8476d97a2187d23",
-        "size": 8990,
+        "sha": "0ab3554d4b4117dd17c51de2cbcb6d8e9d32254f",
+        "size": 23363,
         "type": "file",
-        "downloadUrl": "https://raw.githubusercontent.com/bmad-code-org/BMAD-METHOD/e734d3ac3c0f4ea31cc2c2bbbe79e86e54f2cae6/skills/bmad/scripts/list_templates.py"
+        "downloadUrl": "https://raw.githubusercontent.com/bmad-code-org/BMAD-METHOD/a867e1604b365d48ea03cbd109da1066ba0c84bc/skills/bmad/scripts/list_templates.py"
       },
       {
         "name": "memlog.py",
@@ -323,7 +299,7 @@
         "sha": "57a7cb3b43ba7534d3da6490a0ba8e0c99d8b827",
         "size": 11959,
         "type": "file",
-        "downloadUrl": "https://raw.githubusercontent.com/bmad-code-org/BMAD-METHOD/e734d3ac3c0f4ea31cc2c2bbbe79e86e54f2cae6/skills/bmad/scripts/memlog.py"
+        "downloadUrl": "https://raw.githubusercontent.com/bmad-code-org/BMAD-METHOD/a867e1604b365d48ea03cbd109da1066ba0c84bc/skills/bmad/scripts/memlog.py"
       },
       {
         "name": "migrate_v6.py",
@@ -331,7 +307,7 @@
         "sha": "30da4d85ff93d54fdd12dad7618656f7c9bddfa8",
         "size": 45663,
         "type": "file",
-        "downloadUrl": "https://raw.githubusercontent.com/bmad-code-org/BMAD-METHOD/e734d3ac3c0f4ea31cc2c2bbbe79e86e54f2cae6/skills/bmad/scripts/migrate_v6.py"
+        "downloadUrl": "https://raw.githubusercontent.com/bmad-code-org/BMAD-METHOD/a867e1604b365d48ea03cbd109da1066ba0c84bc/skills/bmad/scripts/migrate_v6.py"
       },
       {
         "name": "render_skill.py",
@@ -339,7 +315,7 @@
         "sha": "3285ec1142ccbbdb9918308a2644a98108925609",
         "size": 31765,
         "type": "file",
-        "downloadUrl": "https://raw.githubusercontent.com/bmad-code-org/BMAD-METHOD/e734d3ac3c0f4ea31cc2c2bbbe79e86e54f2cae6/skills/bmad/scripts/render_skill.py"
+        "downloadUrl": "https://raw.githubusercontent.com/bmad-code-org/BMAD-METHOD/a867e1604b365d48ea03cbd109da1066ba0c84bc/skills/bmad/scripts/render_skill.py"
       },
       {
         "name": "resolve_config.py",
@@ -347,7 +323,7 @@
         "sha": "7be7457b8a430164d3b0afe33e339bc800787bf0",
         "size": 2377,
         "type": "file",
-        "downloadUrl": "https://raw.githubusercontent.com/bmad-code-org/BMAD-METHOD/e734d3ac3c0f4ea31cc2c2bbbe79e86e54f2cae6/skills/bmad/scripts/resolve_config.py"
+        "downloadUrl": "https://raw.githubusercontent.com/bmad-code-org/BMAD-METHOD/a867e1604b365d48ea03cbd109da1066ba0c84bc/skills/bmad/scripts/resolve_config.py"
       },
       {
         "name": "resolve_customization.py",
@@ -355,7 +331,7 @@
         "sha": "4b477a95530e492133108b1f410400515d6169c0",
         "size": 6159,
         "type": "file",
-        "downloadUrl": "https://raw.githubusercontent.com/bmad-code-org/BMAD-METHOD/e734d3ac3c0f4ea31cc2c2bbbe79e86e54f2cae6/skills/bmad/scripts/resolve_customization.py"
+        "downloadUrl": "https://raw.githubusercontent.com/bmad-code-org/BMAD-METHOD/a867e1604b365d48ea03cbd109da1066ba0c84bc/skills/bmad/scripts/resolve_customization.py"
       },
       {
         "name": "roster.py",
@@ -363,7 +339,7 @@
         "sha": "4675a2c6d007996ceaae20beb8462125544672e8",
         "size": 9121,
         "type": "file",
-        "downloadUrl": "https://raw.githubusercontent.com/bmad-code-org/BMAD-METHOD/e734d3ac3c0f4ea31cc2c2bbbe79e86e54f2cae6/skills/bmad/scripts/roster.py"
+        "downloadUrl": "https://raw.githubusercontent.com/bmad-code-org/BMAD-METHOD/a867e1604b365d48ea03cbd109da1066ba0c84bc/skills/bmad/scripts/roster.py"
       },
       {
         "name": "setup.py",
@@ -371,7 +347,7 @@
         "sha": "257c9846cd06a22499a8d7ffdae8791e4097cb12",
         "size": 104537,
         "type": "file",
-        "downloadUrl": "https://raw.githubusercontent.com/bmad-code-org/BMAD-METHOD/e734d3ac3c0f4ea31cc2c2bbbe79e86e54f2cae6/skills/bmad/scripts/setup.py"
+        "downloadUrl": "https://raw.githubusercontent.com/bmad-code-org/BMAD-METHOD/a867e1604b365d48ea03cbd109da1066ba0c84bc/skills/bmad/scripts/setup.py"
       },
       {
         "name": "setup_check.py",
@@ -379,7 +355,7 @@
         "sha": "3ef6bb407f83b4746607a4b125277c7fde43c5a2",
         "size": 7194,
         "type": "file",
-        "downloadUrl": "https://raw.githubusercontent.com/bmad-code-org/BMAD-METHOD/e734d3ac3c0f4ea31cc2c2bbbe79e86e54f2cae6/skills/bmad/scripts/setup_check.py"
+        "downloadUrl": "https://raw.githubusercontent.com/bmad-code-org/BMAD-METHOD/a867e1604b365d48ea03cbd109da1066ba0c84bc/skills/bmad/scripts/setup_check.py"
       },
       {
         "name": "stamp_release.py",
@@ -387,12 +363,12 @@
         "sha": "c413b2afb74d1bd354a61bb114fcbf81409ed50b",
         "size": 5367,
         "type": "file",
-        "downloadUrl": "https://raw.githubusercontent.com/bmad-code-org/BMAD-METHOD/e734d3ac3c0f4ea31cc2c2bbbe79e86e54f2cae6/skills/bmad/scripts/stamp_release.py"
+        "downloadUrl": "https://raw.githubusercontent.com/bmad-code-org/BMAD-METHOD/a867e1604b365d48ea03cbd109da1066ba0c84bc/skills/bmad/scripts/stamp_release.py"
       },
       {
         "name": "tests",
         "path": "skills/bmad/scripts/tests",
-        "sha": "7377b77f67718dd0a569bb7cd99cbf3322d0a251",
+        "sha": "674097fd92a77cd71823a743ac293ff61eefb4ab",
         "size": 0,
         "type": "dir",
         "downloadUrl": null
@@ -403,7 +379,7 @@
         "sha": "4f09a353791a12c9de78c5f3df84aa8f08bf7cdb",
         "size": 21439,
         "type": "file",
-        "downloadUrl": "https://raw.githubusercontent.com/bmad-code-org/BMAD-METHOD/e734d3ac3c0f4ea31cc2c2bbbe79e86e54f2cae6/skills/bmad/scripts/validate_manifests.py"
+        "downloadUrl": "https://raw.githubusercontent.com/bmad-code-org/BMAD-METHOD/a867e1604b365d48ea03cbd109da1066ba0c84bc/skills/bmad/scripts/validate_manifests.py"
       }
     ]
   }
