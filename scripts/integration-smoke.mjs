@@ -72,22 +72,22 @@ async function render(skillName) {
   }
 }
 
-async function exercisePrdRuntime() {
-  const prdSkill = path.join(skillsRoot, 'bmad-prd');
+async function exercisePmRuntime() {
+  const pmSkill = path.join(skillsRoot, 'bmad-agent-pm');
   const resolveCustomization = path.join(projectRoot, '_bmad', 'scripts', 'resolve_customization.py');
   const memlog = path.join(projectRoot, '_bmad', 'scripts', 'memlog.py');
 
   const customization = run(
     'uv',
-    ['run', '--no-cache', resolveCustomization, '--skill', prdSkill, '--project-root', projectRoot, '--key', 'workflow'],
-    'resolve bmad-prd customization',
+    ['run', '--no-cache', resolveCustomization, '--skill', pmSkill, '--project-root', projectRoot, '--key', 'workflow'],
+    'resolve bmad-agent-pm customization',
   );
   const parsed = JSON.parse(customization);
   if (!parsed || typeof parsed !== 'object') {
-    throw new Error('PRD customization did not resolve to an object');
+    throw new Error('PM customization did not resolve to an object');
   }
 
-  const workspace = path.join(projectRoot, '_bmad-output', 'smoke-prd');
+  const workspace = path.join(projectRoot, '_bmad-output', 'smoke-pm');
   run('uv', ['run', '--no-cache', memlog, 'init', '--workspace', workspace, '--field', 'topic=smoke'], 'init memlog');
   run(
     'uv',
@@ -106,7 +106,7 @@ try {
 
   // Exercise representative core, planning, and implementation skills.
   await bootstrap('bmad-brainstorming');
-  await bootstrap('bmad-prd');
+  await bootstrap('bmad-agent-pm');
   await bootstrap('bmad-build');
 
   const configPath = path.join(projectRoot, '_bmad', 'config.toml');
@@ -128,13 +128,13 @@ try {
     throw new Error('Bootstrap overwrote existing BMAD project configuration');
   }
 
-  // Exercise a direct/conversational workflow's shared utilities.
-  await exercisePrdRuntime();
+  // Exercise planning agent customization and shared runtime utilities.
+  await exercisePmRuntime();
 
   // Exercise the rendered implementation path used by bmad-build.
   await render('bmad-build');
 
-  console.log('Integration smoke passed: bootstrap, config preservation, PRD runtime, build render');
+  console.log('Integration smoke passed: bootstrap, config preservation, PM runtime, build render');
 } finally {
   await rm(projectRoot, { recursive: true, force: true });
 }
