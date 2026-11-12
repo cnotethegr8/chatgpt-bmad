@@ -27,7 +27,7 @@ from unittest import mock
 from helpers import chmod
 
 SCRIPTS_SRC = Path(__file__).resolve().parents[1]
-REPO = SCRIPTS_SRC.parents[2]
+REPO = SCRIPTS_SRC.parents[3]
 SKILLS_SRC = REPO / "skills"
 CONFIG_TEMPLATE = (SCRIPTS_SRC.parent / "assets" / "config.template.toml").read_text(encoding="utf-8")
 SHARED_SCRIPTS = (
@@ -59,7 +59,7 @@ def _team_config(project: Path) -> str:
 
 def _copy_skill(dest: Path, name: str) -> Path:
     shutil.copytree(
-        SKILLS_SRC / name,
+        next(SKILLS_SRC.glob(f"*/{name}")),
         dest,
         ignore=shutil.ignore_patterns("__pycache__", "*.pyc"),
     )

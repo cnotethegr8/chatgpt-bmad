@@ -5,7 +5,7 @@ code = "{code}"
 version = "{version}"
 update_source = "{update_source}"
 skills = [{skills}]
-required_skills = [{ skill = "bmad", version = "{bmad_version}", source = "github:bmad-code-org/BMAD-METHOD/skills" }]
+required_skills = [{ skill = "bmad", version = "{bmad_version}", source = "github:bmad-code-org/BMAD-METHOD/skills/core-tools" }]
 {if-recommended}
 # Nice to have alongside. `bmad` mentions these once and does not insist.
 recommended_skills = [{recommended_skills}]

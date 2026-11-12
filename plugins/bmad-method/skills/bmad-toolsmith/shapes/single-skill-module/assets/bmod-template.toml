@@ -4,7 +4,7 @@
 code = "{code}"
 version = "{version}"
 update_source = "{update_source}"
-required_skills = [{ skill = "bmad", version = "{bmad_version}", source = "github:bmad-code-org/BMAD-METHOD/skills" }]
+required_skills = [{ skill = "bmad", version = "{bmad_version}", source = "github:bmad-code-org/BMAD-METHOD/skills/core-tools" }]
 pre_install_message = ""
 post_install_message = ""
 

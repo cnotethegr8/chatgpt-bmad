@@ -5,8 +5,8 @@
 """Release version stamper for module repositories.
 
 Writes a human-supplied SemVer version into every module record: the
-`version` line inside the `[bmod]` table of each skills/*/bmod.toml that has
-one. Member skills carry no version and are not written. Each module
+`version` line inside the `[bmod]` table of each bmod.toml under skills/ that
+has one, a module grouped in its own folder included. Member skills carry no version and are not written. Each module
 repository's release runbook uses it to stamp releases and the next
 placeholder on `dev`.
 
@@ -23,8 +23,8 @@ After writing, the script re-reads every file and fails naming the offending
 path if anything is off.
 
 Usage:
-  uv run --python 3.11 skills/bmad/scripts/stamp_release.py 1.2.0 [--project-root <path>]
-  uv run --python 3.11 skills/bmad/scripts/stamp_release.py --check [--project-root <path>]
+  uv run --python 3.11 skills/core-tools/bmad/scripts/stamp_release.py 1.2.0 [--project-root <path>]
+  uv run --python 3.11 skills/core-tools/bmad/scripts/stamp_release.py --check [--project-root <path>]
 """
 
 from __future__ import annotations

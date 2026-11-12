@@ -36,13 +36,13 @@ Leave the record's version unchanged. The execution plan's files list shows thes
 
 ## From a single-skill module
 
-A single-skill module has no record folder yet, so build one before anything joins. Write `bmod-<code>/` as Files says, keeping `code`, `version`, `update_source`, dependencies and questions from its `[bmod]`, so installed answers still resolve, and move its `help/` there. Its `bmod.toml` becomes a member file.
+A single-skill module has no record folder yet, so build one before anything joins. Write `bmod-<code>/` as Files says, keeping `code`, `version`, `update_source`, dependencies and questions from its `[bmod]`, so installed answers still resolve, and move its `help/`, `roster.toml` and `doc-templates/` there. Its `bmod.toml` becomes a member file.
 
 ## Rules
 
 - Names: members carry the code as prefix (`acme-brainstorm`, agents `acme-agent-<name>`); `bmad-` names belong to the bmad-code-org, which writes `bmad-<code>-<skill>`. The record folder is `bmod-` plus the code exactly.
 - Config: a question is `key`, `prompt`, `default`, optional `scope = "team"|"user"`, nothing else; `key` is not the code and does not start with `<code>.`. Every member reads answers as `modules.<code>.<key>` through `resolve_config.py`. One question serves every skill that needs the value, so the record is the only place a path is asked.
-- Dependencies: `{ skill = "bmad", version = "{bmad_version}", source = "github:bmad-code-org/BMAD-METHOD/skills" }` in the record's `required_skills`, because members run `_bmad/scripts`. `{bmad_version}` is the `version` in the `bmod-core-tools` record installed beside `{skill-root}`, asked of the user when it is not installed. A plain name is a skill from this module's source; a table names one from elsewhere. Module-wide needs go in the record, one skill's needs in its own file.
+- Dependencies: `{ skill = "bmad", version = "{bmad_version}", source = "github:bmad-code-org/BMAD-METHOD/skills/core-tools" }` in the record's `required_skills`, because members run `_bmad/scripts`. `{bmad_version}` is the `version` in the `bmod-core-tools` record installed beside `{skill-root}`, asked of the user when it is not installed. A plain name is a skill from this module's source; a table names one from elsewhere. Module-wide needs go in the record, one skill's needs in its own file.
 - Roster `[[members]]`: `code`, `skill`, `name`, `icon`, `title`, `persona`, copied from the agent's `customize.toml`. A member without `skill` is a guest who exists only in `[[groups]]`.
 - Help has one reader, the `bmad` help agent, so it holds what each skill gives, when to recommend it, what to offer next, where output lands and which `bmad setup` answer sets it. Leave out install mechanics and manifest keys.
 

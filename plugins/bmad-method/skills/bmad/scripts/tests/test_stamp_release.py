@@ -304,7 +304,7 @@ class StampedContentTests(unittest.TestCase):
 
 
 class InstallerContractTests(unittest.TestCase):
-    """Pin the version rules the stamper adds on top of skills/bmad/scripts/setup.py.
+    """Pin the version rules the stamper adds on top of skills/core-tools/bmad/scripts/setup.py.
 
     If setup.py's rules drift, these fail instead of shipping a release an
     installed module cannot order.

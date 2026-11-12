@@ -4,7 +4,7 @@
 # ///
 """Tests for pick_methods.py.
 
-Run from the repo root: uv run --frozen python -B -m pytest skills/bmad-advanced-elicitation/scripts/tests/
+Run from the repo root: uv run --frozen python -B -m pytest skills/core-tools/bmad-advanced-elicitation/scripts/tests/
 """
 
 import json
