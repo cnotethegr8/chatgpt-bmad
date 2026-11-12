@@ -70,3 +70,39 @@ test('remote discovery falls back from flat skills to legacy src layout', async 
   assert.equal(roots.layout, 'legacy');
   assert.deepEqual(calls, ['skills', 'src', 'src/bmm-skills', 'src/core-skills', 'src/scripts']);
 });
+
+test('discovers modular BMAD layout and core scripts', async () => {
+  const root = await tempRoot();
+  await write(root, 'skills/core-tools/bmod-core-tools/bmod.toml',
+    '[bmod]\ncode = "core-tools"\nversion = "6.13.0-next"\n');
+  await write(root, 'skills/core-tools/bmod-core-tools/SKILL.md',
+    '---\nname: bmod-core-tools\n---\n');
+  await write(root, 'skills/core-tools/bmad/SKILL.md', '---\nname: bmad\n---\n');
+  await write(root, 'skills/core-tools/bmad/scripts/render_skill.py', 'print("ok")\n');
+  await write(root, 'skills/method/bmad-build/SKILL.md', '---\nname: bmad-build\n---\n');
+  const layout = await discoverUpstreamLayout(root);
+  assert.equal(layout.kind, 'modular');
+  assert.equal(layout.version, '6.13.0-next');
+  assert.deepEqual(layout.skillPaths, [
+    './skills/core-tools/bmad',
+    './skills/core-tools/bmod-core-tools',
+    './skills/method/bmad-build',
+  ]);
+  assert.equal(layout.runtimeScriptsPath, path.join(root, 'skills/core-tools/bmad/scripts'));
+});
+
+test('remote discovery recognizes modular skills without probing legacy src', async () => {
+  const calls = [];
+  const listDirectory = async (directory) => {
+    calls.push(directory);
+    if (directory === 'skills/bmad/scripts') {
+      throw Object.assign(new Error('not found'), { status: 404 });
+    }
+    return [{ path: directory }];
+  };
+  const roots = await discoverRemoteRoots(listDirectory, 'abc123');
+  assert.equal(roots.layout, 'modular');
+  assert.deepEqual(calls, [
+    'skills', 'skills/bmad/scripts', 'skills/core-tools/bmad/scripts',
+  ]);
+});

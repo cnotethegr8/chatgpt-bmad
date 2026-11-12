@@ -63,7 +63,37 @@ export async function discoverUpstreamLayout(root) {
     if (await exists(path.join(skillsRoot, entry.name, 'SKILL.md'))) skillNames.push(entry.name);
   }
   skillNames.sort();
-  if (!skillNames.length) throw new Error('Upstream BMAD flat skills tree has no skills');
+  if (!skillNames.length) {
+    // BMAD groups skills by module under skills/<module>/<skill>.
+    const nestedSkills = [];
+    for (const entry of entries) {
+      if (!entry.isDirectory()) continue;
+      const moduleRoot = path.join(skillsRoot, entry.name);
+      const children = await readdir(moduleRoot, { withFileTypes: true });
+      for (const child of children) {
+        if (!child.isDirectory()) continue;
+        if (await exists(path.join(moduleRoot, child.name, 'SKILL.md'))) {
+          nestedSkills.push(`./skills/${entry.name}/${child.name}`);
+        }
+      }
+    }
+    nestedSkills.sort();
+    if (!nestedSkills.length) throw new Error('Upstream BMAD skills tree has no skills');
+
+    const runtimeScriptsPath = path.join(root, 'skills', 'core-tools', 'bmad', 'scripts');
+    const versionPath = path.join(root, 'skills', 'core-tools', 'bmod-core-tools', 'bmod.toml');
+    if (!(await exists(path.join(runtimeScriptsPath, 'render_skill.py')))) {
+      throw new Error('Modular BMAD layout is missing its core runtime scripts');
+    }
+    return {
+      kind: 'modular',
+      marketplace: null,
+      plugin: null,
+      version: parseVersion(await readFile(versionPath, 'utf8'), 'Modular BMAD core-tools record'),
+      skillPaths: nestedSkills,
+      runtimeScriptsPath,
+    };
+  }
 
   return {
     kind: 'flat',
@@ -76,14 +106,30 @@ export async function discoverUpstreamLayout(root) {
 }
 
 export async function discoverRemoteRoots(listDirectory, ref) {
+  let skills = null;
   try {
-    return {
-      layout: 'flat',
-      skills: await listDirectory('skills', ref),
-      runtimeScripts: await listDirectory('skills/bmad/scripts', ref),
-    };
+    skills = await listDirectory('skills', ref);
   } catch (error) {
     if (error?.status !== 404) throw error;
+  }
+
+  if (skills) {
+    try {
+      return {
+        layout: 'flat',
+        skills,
+        runtimeScripts: await listDirectory('skills/bmad/scripts', ref),
+      };
+    } catch (error) {
+      if (error?.status !== 404) throw error;
+    }
+
+    // A missing flat runtime is not evidence that the legacy src tree exists.
+    return {
+      layout: 'modular',
+      skills,
+      runtimeScripts: await listDirectory('skills/core-tools/bmad/scripts', ref),
+    };
   }
 
   return {
