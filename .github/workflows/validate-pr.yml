@@ -24,10 +24,14 @@ jobs:
         run: npm run integration
       - name: Verify WDS workflow runtime
         run: npm run integration:wds
-      - name: Verify adapter against current upstream BMAD
+      - name: Verify full sync and adapter against current upstream BMAD
         shell: bash
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
         run: |
           git clone --depth 1 https://github.com/bmad-code-org/BMAD-METHOD.git .tmp/bmad
+          npm run sync
+          node scripts/validate-manifest.mjs
           npm run build -- .tmp/bmad
           npm run check
           npm run integration
