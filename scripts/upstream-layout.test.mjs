@@ -74,12 +74,12 @@ test('remote discovery falls back from flat skills to legacy src layout', async 
 test('discovers modular BMAD layout and core scripts', async () => {
   const root = await tempRoot();
   await write(root, 'skills/core-tools/bmod-core-tools/bmod.toml',
-    '[bmod]\\ncode = "core-tools"\\nversion = "6.13.0-next"\\n');
+    '[bmod]\ncode = "core-tools"\nversion = "6.13.0-next"\n');
   await write(root, 'skills/core-tools/bmod-core-tools/SKILL.md',
-    '---\\nname: bmod-core-tools\\n---\\n');
-  await write(root, 'skills/core-tools/bmad/SKILL.md', '---\\nname: bmad\\n---\\n');
-  await write(root, 'skills/core-tools/bmad/scripts/render_skill.py', 'print("ok")\\n');
-  await write(root, 'skills/method/bmad-build/SKILL.md', '---\\nname: bmad-build\\n---\\n');
+    '---\nname: bmod-core-tools\n---\n');
+  await write(root, 'skills/core-tools/bmad/SKILL.md', '---\nname: bmad\n---\n');
+  await write(root, 'skills/core-tools/bmad/scripts/render_skill.py', 'print("ok")\n');
+  await write(root, 'skills/method/bmad-build/SKILL.md', '---\nname: bmad-build\n---\n');
   const layout = await discoverUpstreamLayout(root);
   assert.equal(layout.kind, 'modular');
   assert.equal(layout.version, '6.13.0-next');
