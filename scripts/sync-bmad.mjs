@@ -60,8 +60,15 @@ await writeFile('upstream/VERSION', `${sha}\n`);
 await writeFile('upstream/manifest.json', `${JSON.stringify(manifest, null, 2)}\n`);
 
 console.log(`Normalized BMAD ${sha} (${roots.layout} layout)`);
-if (roots.layout === 'flat') console.log(`skills entries: ${roots.skills.length}`);
-else {
-  console.log(`bmm-skills entries: ${roots.bmmSkills.length}`);
-  console.log(`core-skills entries: ${roots.coreSkills.length}`);
+switch (roots.layout) {
+  case 'flat':
+  case 'modular':
+    console.log(`skills entries: ${roots.skills.length}`);
+    break;
+  case 'legacy':
+    console.log(`bmm-skills entries: ${roots.bmmSkills.length}`);
+    console.log(`core-skills entries: ${roots.coreSkills.length}`);
+    break;
+  default:
+    throw new Error(`Unsupported upstream layout: ${roots.layout}`);
 }
